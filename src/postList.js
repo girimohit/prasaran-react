@@ -20,7 +20,7 @@ const PostList = () => {
 
   return (
     <>
-      <h1 className="bg-gray-400   text-white"> INDIVIDUAL POSTS </h1>
+      <h1 className="bg-gray-400 ext-white"> INDIVIDUAL POSTS </h1>
       <ul>
         {posts.map((post) => (
           <li key={post.id}>
