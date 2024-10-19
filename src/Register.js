@@ -1,5 +1,10 @@
 import React from 'react';
 import loginHeadimg from './assets/images/loginHeadimg.png';
+import { getImageURL } from './assets/getImageURL';
+
+
+// TODO: Use Firebase Storage to fetch the image URL using proper method
+
 
 const Register = () => {
   return (
@@ -8,7 +13,7 @@ const Register = () => {
         
         <div className="absolute -top-24 left-1/2 transform -translate-x-1/2 bg-gray-300 rounded-xl">
           <img
-            src={loginHeadimg}
+            src="https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/loginHeadimg.png?alt=media&token=d38ed5d6-d24a-4597-bedd-35170bc3be43"
             alt="Logo"
             className="w-40 h-40 object-contain"
           />
