@@ -1,4 +1,8 @@
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
+
 const EditField = ({ field_name, field_data }) => {
+  // history.goBack();
   return (
     <>
       <div className="my-3 flex flex-col justify-center rounded-lg border border-gray-400 p-2 px-4">
@@ -10,10 +14,15 @@ const EditField = ({ field_name, field_data }) => {
 };
 
 const EditProfileScreen = () => {
+  let navigate = useNavigate();
   return (
     <>
       <div className="mb-8 flex flex-col items-center justify-center">
-        <h2 className="my-10 text-center font-bold">Edit Profile</h2>
+        <div className="grid w-full grid-cols-3 items-center justify-center  px-10">
+          <IoMdArrowRoundBack onClick={() => navigate(-1)} />
+          <h2 className="my-10 text-center font-bold">Edit Profile</h2>
+        </div>
+
         <div className="mb-6 h-32 w-32 rounded-full border-2 border-black bg-gray-50"></div>
         <h3 className="font-semibold">Full Name</h3>
         <p className="text-gray-400">@username</p>

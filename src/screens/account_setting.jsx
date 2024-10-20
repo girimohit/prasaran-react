@@ -5,6 +5,8 @@ import { FaRegSave } from "react-icons/fa";
 import { MdHelpOutline } from "react-icons/md";
 import { MdLogout } from "react-icons/md";
 
+import { Link } from "react-router-dom";
+
 const SettingOptions = ({ option_name, IconComponent }) => {
   return (
     <>
@@ -24,12 +26,11 @@ const AccountSettingScreen = () => {
         <div className="h-32 w-32 rounded-full border-2 border-black bg-gray-50"></div>
         <h3 className="font-semibold">Full Name</h3>
         <p className="text-gray-400">@username</p>
-        <button
-          className="rounded-lg bg-black px-5 py-1 text-white"
-          onClick={"/edit-profile"}
-        >
-          Edit Profile
-        </button>
+        <Link to={"edit-profile"}>
+          <button className="rounded-lg bg-black px-5 py-1 text-white">
+            Edit Profile
+          </button>
+        </Link>
       </div>
 
       <hr className="mx-5 my-1 h-1 border-0 bg-gray-300" />
