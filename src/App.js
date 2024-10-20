@@ -1,31 +1,17 @@
-// import logo from './logo.svg';
-// import './App.css';
-
-import PostList from "./postList";
+import { BrowserRouter as Router } from "react-router-dom";
+import BottomNavBar from "./components/bottom_nav";
+import AllRoutes from "./all_routes";
 
 function App() {
-  
   return (
-    <div className="App">
-      <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" /> */}
-        {/* <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a> */}
-        
-
-        <PostList />
-      </header>
-    </div>
+    <Router>
+      <div className="App h-screen bg-[#DEE2E6]">
+        <header className="App-header">
+          <AllRoutes />
+          <BottomNavBar />
+        </header>
+      </div>
+    </Router>
   );
 }
 
