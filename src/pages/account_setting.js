@@ -6,8 +6,10 @@ import { MdHelpOutline } from "react-icons/md";
 import { MdLogout } from "react-icons/md";
 
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
-import { auth } from "../firebaseConfig"; // Make sure to import your Firebase auth instance
+import { auth, db } from "../firebaseConfig"; // Import your Firebase auth and Firestore instance
+import { doc, getDoc } from "firebase/firestore";
 
 const SettingOptions = ({ option_name, IconComponent, onClick }) => {
   return (
@@ -21,26 +23,44 @@ const SettingOptions = ({ option_name, IconComponent, onClick }) => {
 };
 
 const AccountSettingScreen = () => {
+  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
   const navigate = useNavigate();
+
+  // Function to fetch the user's full name from Firestore
+  const fetchUserData = async () => {
+    const user = auth.currentUser;
+    if (user) {
+      const userDocRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        setFullName(userDoc.data().fullName);
+        setUsername(userDoc.data().username); // Assuming you have a username field
+      }
+    }
+  };
 
   // Logout function
   const handleLogout = async () => {
     try {
       await signOut(auth); // Sign out the user
-      alert("USER LOGGED OUT");
       navigate("/login"); // Redirect to the login screen
     } catch (error) {
       console.error("Error logging out:", error);
     }
   };
 
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
   return (
     <>
       <div className="mb-8 flex flex-col items-center justify-center">
         <h2 className="my-10 text-center font-bold">Account</h2>
         <div className="h-32 w-32 rounded-full border-2 border-black bg-gray-50"></div>
-        <h3 className="font-semibold">Full Name</h3>
-        <p className="text-gray-400">@username</p>
+        <h3 className="font-semibold">{fullName || "Full Name"}</h3>
+        <p className="text-gray-400">@{username || "username"}</p>
         <Link to={"edit-profile"}>
           <button className="rounded-lg bg-black px-5 py-1 text-white">
             Edit Profile
