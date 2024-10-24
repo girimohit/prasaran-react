@@ -124,6 +124,7 @@ const EditProfileScreen = () => {
           )}
           <label htmlFor="fileInput">
             <IoMdCamera
+            size={34}
               className="absolute bottom-0 right-0 cursor-pointer rounded-full bg-white p-1 text-xl"
             />
           </label>

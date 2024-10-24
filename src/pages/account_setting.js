@@ -8,7 +8,7 @@ import { MdLogout } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
-import { auth, db } from "../firebaseConfig"; // Import your Firebase auth and Firestore instance
+import { auth, db } from "../firebaseConfig"; 
 import { doc, getDoc } from "firebase/firestore";
 
 const SettingOptions = ({ option_name, IconComponent, onClick }) => {
@@ -72,7 +72,7 @@ const AccountSettingScreen = () => {
             <div className="h-full w-full rounded-full bg-gray-200"></div>
           )}
         </div>
-        
+
         <h3 className="font-semibold">{fullName || "Full Name"}</h3>
         <p className="text-gray-400">@{username || "username"}</p>
         <Link to={"edit-profile"}>
