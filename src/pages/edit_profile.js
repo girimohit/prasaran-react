@@ -1,10 +1,11 @@
-import { IoMdArrowRoundBack } from "react-icons/io";
+import { IoMdArrowRoundBack , IoMdCamera } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { auth, db } from "../firebaseConfig";
-import DatePicker from "react-datepicker"; // Import the date picker
-import "react-datepicker/dist/react-datepicker.css"; // Import date picker CSS
+import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import { auth, db, storage } from "../firebaseConfig";
+import DatePicker from "react-datepicker"; 
+import "react-datepicker/dist/react-datepicker.css";
 
 const EditField = ({ field_name, field_data, onChange }) => {
   return (
@@ -26,6 +27,7 @@ const EditProfileScreen = () => {
   const [username, setUsername] = useState("");
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState(null);
+  const [profilePicture, setProfilePicture] = useState("");
   const navigate = useNavigate();
 
   // Function to fetch user data from Firestore
@@ -40,6 +42,7 @@ const EditProfileScreen = () => {
         setUsername(userDoc.data().username || "");
         setGender(userDoc.data().gender || "");
         setDob(userDoc.data().dob ? new Date(userDoc.data().dob) : null);
+        setProfilePicture(userDoc.data().profilePicture || "");
 
         const dateOfBirth = userDoc.data().dob ? new Date(userDoc.data().dob) : null;
         setDob(isNaN(dateOfBirth) ? null : dateOfBirth);
@@ -59,12 +62,40 @@ const EditProfileScreen = () => {
           username,
           gender,
           dob: dob ? dob.toISOString() : null,
+          profilePicture,
         });
         alert("Profile updated successfully");
         navigate(-1);
       } catch (error) {
         console.error("Error updating profile:", error);
         alert("Failed to update profile");
+      }
+    }
+  };
+
+  const handleProfilePictureUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const user = auth.currentUser;
+    if (user) {
+      const storageRef = ref(storage, `profilePictures/${user.uid}`);
+      try {
+        // Upload the file to Firebase Storage
+        await uploadBytes(storageRef, file);
+
+        // Get the download URL and update the profile picture state
+        const downloadURL = await getDownloadURL(storageRef);
+        setProfilePicture(downloadURL);
+
+        // Update the profile picture in Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        await updateDoc(userDocRef, { profilePicture: downloadURL });
+
+        alert("Profile picture updated successfully");
+      } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        alert("Failed to upload profile picture");
       }
     }
   };
@@ -81,7 +112,29 @@ const EditProfileScreen = () => {
           <h2 className="my-10 text-center font-bold">Edit Profile</h2>
         </div>
 
-        <div className="mb-6 h-32 w-32 rounded-full border-2 border-black bg-gray-50"></div>
+        <div className="relative mb-6 h-32 w-32 rounded-full border-2 border-black bg-gray-50">
+          {profilePicture ? (
+            <img
+              src={profilePicture}
+              alt="Profile"
+              className="h-full w-full rounded-full object-cover"
+            />
+          ) : (
+            <div className="h-full w-full rounded-full bg-gray-200"></div>
+          )}
+          <label htmlFor="fileInput">
+            <IoMdCamera
+              className="absolute bottom-0 right-0 cursor-pointer rounded-full bg-white p-1 text-xl"
+            />
+          </label>
+          <input
+            id="fileInput"
+            type="file"
+            accept="image/*"
+            onChange={handleProfilePictureUpload}
+            style={{ display: "none" }}
+          />
+        </div>
         <h3 className="font-semibold">{fullName || "Full Name"}</h3>
         <p className="text-gray-400">@{username || "username"}</p>
       </div>

@@ -25,6 +25,7 @@ const SettingOptions = ({ option_name, IconComponent, onClick }) => {
 const AccountSettingScreen = () => {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
   const navigate = useNavigate();
 
   // Function to fetch the user's full name from Firestore
@@ -35,7 +36,8 @@ const AccountSettingScreen = () => {
       const userDoc = await getDoc(userDocRef);
       if (userDoc.exists()) {
         setFullName(userDoc.data().fullName);
-        setUsername(userDoc.data().username); // Assuming you have a username field
+        setUsername(userDoc.data().username);
+        setProfilePicture(userDoc.data().profilePicture || "");
       }
     }
   };
@@ -58,7 +60,19 @@ const AccountSettingScreen = () => {
     <>
       <div className="mb-8 flex flex-col items-center justify-center">
         <h2 className="my-10 text-center font-bold">Account</h2>
-        <div className="h-32 w-32 rounded-full border-2 border-black bg-gray-50"></div>
+
+        <div className="relative h-32 w-32 rounded-full border-2 border-black bg-gray-50">
+          {profilePicture ? (
+            <img
+              src={profilePicture}
+              alt="Profile"
+              className="h-full w-full rounded-full object-cover"
+            />
+          ) : (
+            <div className="h-full w-full rounded-full bg-gray-200"></div>
+          )}
+        </div>
+        
         <h3 className="font-semibold">{fullName || "Full Name"}</h3>
         <p className="text-gray-400">@{username || "username"}</p>
         <Link to={"edit-profile"}>
