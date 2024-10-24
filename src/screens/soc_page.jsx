@@ -1,6 +1,7 @@
 import React from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { FaThumbsUp, FaComment } from "react-icons/fa";
+import { FiPlus } from 'react-icons/fi';
 
 // Posts array
 const posts = [
@@ -89,7 +90,7 @@ const userImages = [
 
 const SocPage = () => {
   return (
-    <div className="min-h-screen bg-[#DEE2E6] p-6 flex flex-col items-center">
+    <div className="min-h-screen bg-[#DEE2E6] flex flex-col items-center">
       {/* Edit Button */}
       <button
         className="absolute top-6 right-6 bg-gray-200 px-4 py-2 rounded-full shadow-lg flex items-center justify-center gap-2 hover:bg-gray-300"
@@ -149,48 +150,57 @@ const SocPage = () => {
       </div>
 
       {/* Post Sections - Dynamically Generated */}
-      {posts.map((post) => (
-        <div key={post.id} className="my-8 bg-[#F8F8FF] rounded-2xl">
-          {/* Image Section */}
-          <div className="flex items-center space-x-4 bg-[#F8F8FF] pl-2 py-2">
-            <img
-              className="w-10 h-10 rounded-full"
-              src={post.profilePic}
-              alt="profile"
-            />
-            <div>
-              <h2 className="text-sm font-semibold">{post.accountName}</h2>
-              <p className="text-xs text-gray-500">{post.content}</p>
+      <div className="p-6">
+        {posts.map((post) => (
+          <div key={post.id} className="my-8 bg-[#F8F8FF] rounded-2xl p-2">
+            {/* Image Section */}
+            <div className="flex items-center space-x-4 bg-[#F8F8FF] pl-2 py-2">
+              <img
+                className="w-10 h-10 rounded-full"
+                src={post.profilePic}
+                alt="profile"
+              />
+              <div>
+                <h2 className="text-sm font-semibold">{post.accountName}</h2>
+                <p className="text-xs text-gray-500">{post.content}</p>
+              </div>
+            </div>
+
+            {/* Post Image */}
+            <div className="px-2">
+              <img
+                className="w-full rounded-2xl object-cover aspect-video"
+                src={post.postImage}
+                alt="Post"
+              />
+            </div>
+
+            {/* Caption */}
+            <div className="text-sm text-gray-700 mb-0 pl-2">
+              {post.caption}
+            </div>
+
+            {/* Likes and Comments Section */}
+            <div className="w-2/3 flex items-center justify-around bg-[#DEE2E6] p-2 m-2 rounded-lg">
+              <div className="flex items-center space-x-1">
+                <FaThumbsUp className="text-blue-500" />
+                <span className="text-sm">{post.likes} Likes</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <FaComment className="text-gray-600" />
+                <span className="text-sm">{post.comments} Comments</span>
+              </div>
             </div>
           </div>
+        ))}
+      </div>
 
-          {/* Post Image */}
-          <div className="px-2">
-            <img
-              className="w-full rounded-2xl object-cover aspect-video"
-              src={post.postImage}
-              alt="Post"
-            />
-          </div>
-
-          {/* Caption */}
-          <div className="text-sm text-gray-700 mb-0 pl-2">
-            {post.caption}
-          </div>
-
-          {/* Likes and Comments Section */}
-          <div className="w-2/3 flex items-center justify-around bg-[#DEE2E6] p-2 m-2 rounded-lg">
-            <div className="flex items-center space-x-1">
-              <FaThumbsUp className="text-blue-500" />
-              <span className="text-sm">{post.likes} Likes</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <FaComment className="text-gray-600" />
-              <span className="text-sm">{post.comments} Comments</span>
-            </div>
-          </div>
-        </div>
-      ))}
+      {/* Create Post Button */}
+      <div className="fixed bottom-10 right-10">
+        <button className="bg-[#DEE2E6] hover:bg-gray-300 text-gray-700 p-6 rounded-full shadow-lg">
+          <FiPlus className="text-2xl" />
+        </button>
+      </div>
     </div>
   );
 };
