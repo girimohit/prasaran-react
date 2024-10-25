@@ -1,7 +1,7 @@
 import React from 'react';
-import { FiEdit } from 'react-icons/fi';
-import { FaThumbsUp, FaComment } from "react-icons/fa";
-import { FiPlus } from 'react-icons/fi';
+import { FiEdit, FiPlus } from 'react-icons/fi';
+import { FaThumbsUp, FaComment } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 // Posts array
 const posts = [
@@ -89,6 +89,12 @@ const userImages = [
 ];
 
 const SocPage = () => {
+  const navigate = useNavigate();  // Initialize the useNavigate hook
+
+  const handleCreate_PostButtonClick = () => {
+    navigate('/create-post');  // Redirect to the create_post page
+  };
+
   return (
     <div className="min-h-screen bg-[#DEE2E6] flex flex-col items-center">
       {/* Edit Button */}
@@ -181,10 +187,10 @@ const SocPage = () => {
             </div>
 
             {/* Likes and Comments Section */}
-            <div className="w-2/3 flex items-center justify-around bg-[#DEE2E6] p-2 m-2 rounded-lg">
+            <div className="w-3/4 flex items-center justify-around bg-[#DEE2E6] p-2 m-2 rounded-lg">
               <div className="flex items-center space-x-1">
                 <FaThumbsUp className="text-blue-500" />
-                <span className="text-sm">{post.likes} Likes</span>
+                <span className="text-sm">{post.likes} Likes &emsp;</span>
               </div>
               <div className="flex items-center space-x-1">
                 <FaComment className="text-gray-600" />
@@ -197,7 +203,10 @@ const SocPage = () => {
 
       {/* Create Post Button */}
       <div className="fixed bottom-10 right-10">
-        <button className="bg-[#DEE2E6] hover:bg-gray-300 text-gray-700 p-6 rounded-full shadow-lg">
+        <button
+          onClick={handleCreate_PostButtonClick}  // Add the click handler
+          className="bg-[#DEE2E6] hover:bg-gray-300 text-gray-700 p-6 rounded-full shadow-lg"
+        >
           <FiPlus className="text-2xl" />
         </button>
       </div>
