@@ -127,7 +127,11 @@ const SocPage = () => {
 
   const handleSocSettingButtonClick = () => {
     navigate('/soc_setting', { state: { societyData } });
-  };  
+  };
+  
+  const handleMembersButtonClick = () => {
+    navigate('/soc_members');  // Redirect to the create_post page
+  };
 
   return (
     <div className="min-h-screen bg-[#DEE2E6] flex flex-col items-center">
@@ -162,7 +166,9 @@ const SocPage = () => {
 
       {/* Navigation Buttons */}
       <div className="mt-6 flex flex-wrap justify-center gap-4">
-        <button className="px-5 py-2 font-semibold bg-[#D9D9D9] rounded-full hover:bg-gray-300">
+        <button 
+        onClick={handleMembersButtonClick}
+        className="px-5 py-2 font-semibold bg-[#D9D9D9] rounded-full hover:bg-gray-300">
           Members
         </button>
         <button className="px-5 py-2 font-semibold bg-[#D9D9D9] rounded-full hover:bg-gray-300">
