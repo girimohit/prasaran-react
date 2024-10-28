@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { storage } from "../firebaseConfig";
 import { ref, uploadBytes, deleteObject, getDownloadURL } from "firebase/storage"; 
+import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [galleryImages, setGalleryImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Maximum image selection limit
   const MAX_IMAGES = 9;
@@ -57,9 +59,14 @@ const CreatePost = () => {
     }
   };
 
+  // Handle navigation to EditPost page
+  const handleNext = () => {
+    navigate("/edit-post", { state: { galleryImages, selectedImages } }); // Pass images to EditPost
+  };
+
   return (
     <div className="min-h-screen bg-[#DEE2E6] text-gray-700 flex flex-col items-center relative px-4 pt-8">
-      <h1 className="text-xl font-bold mb-4 self-start w-full">Create Post</h1>
+      <h1 className="text-xl font-bold mb-4">Create Post</h1>
 
       {/* Selected Images Display */}
       <div className="w-full max-w-3xl aspect-video bg-gray-800 rounded-lg overflow-hidden mb-4">
@@ -109,7 +116,7 @@ const CreatePost = () => {
         <button
           className="bg-gray-700 text-white px-6 py-2 rounded-lg mt-4 cursor-pointer"
           disabled={selectedImages.length === 0 || loading}
-          onClick={() => console.log("Next button clicked with selected images")}
+          onClick={handleNext}
         >
           {loading ? "Uploading..." : "Next"}
         </button>

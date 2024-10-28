@@ -10,6 +10,7 @@ import HomeScreen from "./screens/home_screen";
 import SocPage from "./screens/soc_page";
 import BottomNavBar from "./components/bottom_nav";
 import CreatePost from "./screens/create_post"; 
+import EditPost from "./screens/edit_post";
 
 const AllRoutes = () => {
   const location = useLocation(); // Get the location object
@@ -32,6 +33,7 @@ const AllRoutes = () => {
         <Route path="/account-settings/edit-profile" element={<EditProfileScreen />}/> */}
         <Route path="/soc_page" element={<SocPage />} />
         <Route path="/create-post" element={<CreatePost />} />
+        <Route path="/edit-post" element={<EditPost />} />
       </Routes>
       {showNavPaths.includes(location.pathname) && <BottomNavBar />}
     </>
