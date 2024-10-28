@@ -9,6 +9,7 @@ import { FaTimes } from 'react-icons/fa';
 const EditSocietyDescription = () => {
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
+    const positionSectionRef = useRef(null); // Ref for positions section
 
     const [username, setUsername] = useState('');
     const [societyName, setSocietyName] = useState('');
@@ -93,8 +94,15 @@ const EditSocietyDescription = () => {
     };
 
     const handleEditPosition = (index) => {
-      setNewPosition(positions[index]);
-      setEditIndex(index);
+        if (editIndex === index) {
+            // If the selected position is tapped again, unselect it
+            setEditIndex(null);
+            setNewPosition('');
+        } else {
+            // Otherwise, set it for editing
+            setNewPosition(positions[index]);
+            setEditIndex(index);
+        }
     };
 
     const handleDeletePosition = (index) => {
@@ -102,6 +110,20 @@ const EditSocietyDescription = () => {
         setEditIndex(null);
         setNewPosition('');
     };
+
+    const handleClickOutside = (event) => {
+        if (positionSectionRef.current && !positionSectionRef.current.contains(event.target)) {
+            setEditIndex(null);
+            setNewPosition('');
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const handleCameraClick = () => fileInputRef.current.click();
     const handleProfileImageChange = (e) => {
@@ -213,41 +235,41 @@ const EditSocietyDescription = () => {
           </div>
 
             {/* Dynamic Positions Field */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Add or Edit Position</label>
-              <input
-                type="text"
-                value={newPosition}
-                onChange={(e) => setNewPosition(e.target.value)}
-                placeholder="Enter position"
-                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-              />
-              <button
-                onClick={handleAddPosition}
-                className="mt-2 py-1 px-3 bg-blue-500 text-white rounded-md"
-              >
-                {editIndex !== null ? 'Update Position' : 'Add Position'}
-              </button>
-              <div className="mt-2 space-y-1">
-                {positions.map((position, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <span
-                      onClick={() => handleEditPosition(index)}
-                      className="flex-grow inline-block p-1 bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300"
-                    >
-                      {position}
-                    </span>
-                    {editIndex === index && (
-                      <FaTimes
-                        onClick={() => handleDeletePosition(index)}
-                        className="text-red-500 cursor-pointer"
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+            <div ref={positionSectionRef}>
+                        <label className="block text-sm font-medium text-gray-700">Add or Edit Position</label>
+                        <input
+                            type="text"
+                            value={newPosition}
+                            onChange={(e) => setNewPosition(e.target.value)}
+                            placeholder="Enter position"
+                            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                        />
+                        <button
+                            onClick={handleAddPosition}
+                            className="mt-2 py-1 px-3 bg-blue-500 text-white rounded-md"
+                        >
+                            {editIndex !== null ? 'Update Position' : 'Add Position'}
+                        </button>
+                        <div className="mt-2 space-y-1">
+                            {positions.map((position, index) => (
+                                <div key={index} className="flex items-center space-x-2">
+                                    <span
+                                        onClick={() => handleEditPosition(index)}
+                                        className="flex-grow inline-block p-1 bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300"
+                                    >
+                                        {position}
+                                    </span>
+                                    {editIndex === index && (
+                                        <FaTimes
+                                            onClick={() => handleDeletePosition(index)}
+                                            className="text-red-500 cursor-pointer"
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
 
           {/* Save Button */}
           <button
