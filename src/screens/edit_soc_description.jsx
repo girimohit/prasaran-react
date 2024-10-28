@@ -246,7 +246,7 @@ const EditSocietyDescription = () => {
                         />
                         <button
                             onClick={handleAddPosition}
-                            className="mt-2 py-1 px-3 bg-blue-500 text-white rounded-md"
+                            className="mt-2 py-1 px-3 bg-black text-white font-semibold rounded-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
                         >
                             {editIndex !== null ? 'Update Position' : 'Add Position'}
                         </button>
