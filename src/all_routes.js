@@ -11,6 +11,7 @@ import SocPage from "./screens/soc_page";
 import BottomNavBar from "./components/bottom_nav";
 import CreatePost from "./screens/create_post"; 
 import EditPost from "./screens/edit_post";
+import EditSocietyDescription from "./screens/edit_soc_description";
 
 const AllRoutes = () => {
   const location = useLocation(); // Get the location object
@@ -34,6 +35,7 @@ const AllRoutes = () => {
         <Route path="/soc_page" element={<SocPage />} />
         <Route path="/create-post" element={<CreatePost />} />
         <Route path="/edit-post" element={<EditPost />} />
+        <Route path="/edit-society" element={<EditSocietyDescription />} />
       </Routes>
       {showNavPaths.includes(location.pathname) && <BottomNavBar />}
     </>

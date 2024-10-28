@@ -1,7 +1,10 @@
-import React from 'react';
-import { FiEdit, FiPlus } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { FiEdit, FiPlus, FiMenu } from 'react-icons/fi';
 import { FaThumbsUp, FaComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { db } from '../firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
 
 // Posts array
 const posts = [
@@ -91,36 +94,69 @@ const userImages = [
 const SocPage = () => {
   const navigate = useNavigate();  // Initialize the useNavigate hook
 
+  // State for society data
+  const [societyData, setSocietyData] = useState({
+    profileImageUrl: '',
+    username: '',
+    societyDescription: '',
+  });
+
+  // Fetch society data on component mount
+  useEffect(() => {
+    const fetchSocietyData = async () => {
+      try {
+        const docRef = doc(db, 'societies', '180 Degrees Consulting '); // Replace 'SocietyName' with the actual society's name
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setSocietyData(docSnap.data());
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching society data: ", error);
+      }
+    };
+
+    fetchSocietyData();
+  }, []);
+
   const handleCreate_PostButtonClick = () => {
     navigate('/create-post');  // Redirect to the create_post page
   };
 
+  const handleEditButtonClick = () => {
+    navigate('/edit-society');  // Redirect to EditSocietyDescription page
+  };
+
   return (
     <div className="min-h-screen bg-[#DEE2E6] flex flex-col items-center">
-      {/* Edit Button */}
+      {/* Back Button */}
+      <IoMdArrowRoundBack  
+        onClick={() => navigate('/')} // Change to the correct route if needed
+        className="text-2xl cursor-pointer absolute top-2 left-2 text-gray-700 hover:text-black" // Positioning styles
+      />
+      {/* Hamburger Icon for Edit */}
       <button
-        className="absolute top-6 right-6 bg-gray-200 px-4 py-2 rounded-full shadow-lg flex items-center justify-center gap-2 hover:bg-gray-300"
+        onClick={handleEditButtonClick}
+        className="absolute top-2 right-6"
         aria-label="Edit"
       >
-        <FiEdit className="text-xl text-gray-700" />
-        <span className="text-gray-700 font-medium">Edit</span>
+        <FiMenu className="text-2xl text-gray-700" />
       </button>
 
       {/* Profile Section */}
-      <div className="mt-20 w-full max-w-md flex flex-col items-center space-y-4">
+      <div className="mt-16 w-full max-w-md flex flex-col items-center space-y-4">
         <div className="relative">
           <img
-            src="https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/gdg.png?alt=media&token=8d0e7d3f-f59b-4baf-91d6-49b5a3cd4b69"
+            src={societyData.profileImageUrl || 'https://via.placeholder.com/150'} // Fallback to placeholder image if no profileImageUrl
             alt="Profile"
             className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover"
           />
-          <button className="absolute top-0 right-0 bg-gray-200 p-1 rounded-full hover:bg-gray-300">
-            ✏️
-          </button>
         </div>
-        <h1 className="text-xl sm:text-2xl font-semibold">@gdg_dsc</h1>
-        <p className="text-gray-600 text-center px-4">
-          A short description about the user goes here.
+        <h1 className="text-xl sm:text-2xl font-semibold">@{societyData.username || 'Society Name'}</h1>
+        <p className="text-gray-600 px-4">
+          {societyData.societyDescription || 'A short description about the user goes here.'}
         </p>
       </div>
 
