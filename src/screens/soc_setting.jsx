@@ -71,7 +71,7 @@ const SocSetting = () => {
         </div>
 
         {/* Help & Support */}
-        <div className="flex items-center py-2 border-b">
+        <div className="flex items-center py-2">
             <IoHelpCircleOutline size={20} className="text-gray-500" />
             <p className="text-gray-700 font-medium">&ensp; Help & Support</p>
         </div>

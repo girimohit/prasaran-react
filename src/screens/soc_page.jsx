@@ -130,7 +130,11 @@ const SocPage = () => {
   };
   
   const handleMembersButtonClick = () => {
-    navigate('/soc_members');  // Redirect to the create_post page
+    navigate('/soc_members');  // Redirect to the soc_members page
+  };
+
+  const handleFollowersButtonClick = () => {
+    navigate('/soc_followers');  // Redirect to the soc_followers page
   };
 
   return (
@@ -171,7 +175,9 @@ const SocPage = () => {
         className="px-5 py-2 font-semibold bg-[#D9D9D9] rounded-full hover:bg-gray-300">
           Members
         </button>
-        <button className="px-5 py-2 font-semibold bg-[#D9D9D9] rounded-full hover:bg-gray-300">
+        <button 
+        onClick={handleFollowersButtonClick}
+        className="px-5 py-2 font-semibold bg-[#D9D9D9] rounded-full hover:bg-gray-300">
           Followers
         </button>
         <button className="px-5 py-2 font-semibold bg-[#D9D9D9] rounded-full hover:bg-gray-300">
