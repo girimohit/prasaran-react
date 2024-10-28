@@ -10,8 +10,6 @@ import { doc, getDoc } from 'firebase/firestore';
 const posts = [
   {
     id: 1,
-    profilePic: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/gdg.png?alt=media&token=8d0e7d3f-f59b-4baf-91d6-49b5a3cd4b69',
-    accountName: 'GDG DSC',
     postImage: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/event_img.png?alt=media&token=e7eb6803-b7f9-4a9b-bb21-1b75c060f523',
     caption: 'Caption here for post ...',
     likes: 500,
@@ -19,8 +17,6 @@ const posts = [
   },
   {
     id: 2,
-    profilePic: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/gdg.png?alt=media&token=8d0e7d3f-f59b-4baf-91d6-49b5a3cd4b69',
-    accountName: 'GDG DSC',
     postImage: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/event_img.png?alt=media&token=e7eb6803-b7f9-4a9b-bb21-1b75c060f523',
     caption: 'Caption here for post ...',
     likes: 450,
@@ -28,8 +24,6 @@ const posts = [
   },
   {
     id: 3,
-    profilePic: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/gdg.png?alt=media&token=8d0e7d3f-f59b-4baf-91d6-49b5a3cd4b69',
-    accountName: 'GDG DSC',
     postImage: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/event_img.png?alt=media&token=e7eb6803-b7f9-4a9b-bb21-1b75c060f523',
     caption: 'Caption here for post ...',
     likes: 520,
@@ -37,8 +31,6 @@ const posts = [
   },
   {
     id: 4,
-    profilePic: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/gdg.png?alt=media&token=8d0e7d3f-f59b-4baf-91d6-49b5a3cd4b69',
-    accountName: 'GDG DSC',
     postImage: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/event_img.png?alt=media&token=e7eb6803-b7f9-4a9b-bb21-1b75c060f523',
     caption: 'Caption here for post ...',
     likes: 610,
@@ -46,8 +38,6 @@ const posts = [
   },
   {
     id: 5,
-    profilePic: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/gdg.png?alt=media&token=8d0e7d3f-f59b-4baf-91d6-49b5a3cd4b69',
-    accountName: 'GDG DSC',
     postImage: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/event_img.png?alt=media&token=e7eb6803-b7f9-4a9b-bb21-1b75c060f523',
     caption: 'Caption here for post ...',
     likes: 480,
@@ -211,11 +201,11 @@ const SocPage = () => {
             <div className="flex items-center space-x-4 bg-[#F8F8FF] pl-2 py-2">
               <img
                 className="w-10 h-10 rounded-full"
-                src={post.profilePic}
+                src={societyData.profileImageUrl || 'https://via.placeholder.com/100'}
                 alt="profile"
               />
               <div>
-                <h2 className="text-sm font-semibold">{post.accountName}</h2>
+                <h2 className="text-sm font-semibold">{societyData.username || 'Society Name'}</h2>
                 <p className="text-xs text-gray-500">{post.content}</p>
               </div>
             </div>
