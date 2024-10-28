@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { FiEdit, FiPlus, FiMenu } from 'react-icons/fi';
+import { FiPlus, FiMenu } from 'react-icons/fi';
 import { FaThumbsUp, FaComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebaseConfig';
@@ -125,9 +125,9 @@ const SocPage = () => {
     navigate('/create-post');  // Redirect to the create_post page
   };
 
-  const handleEditButtonClick = () => {
-    navigate('/edit-society');  // Redirect to EditSocietyDescription page
-  };
+  const handleSocSettingButtonClick = () => {
+    navigate('/soc_setting', { state: { societyData } });
+  };  
 
   return (
     <div className="min-h-screen bg-[#DEE2E6] flex flex-col items-center">
@@ -138,7 +138,7 @@ const SocPage = () => {
       />
       {/* Hamburger Icon for Edit */}
       <button
-        onClick={handleEditButtonClick}
+        onClick={handleSocSettingButtonClick}
         className="absolute top-2 right-6"
         aria-label="Edit"
       >
