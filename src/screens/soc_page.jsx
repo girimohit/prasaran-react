@@ -105,7 +105,7 @@ const SocPage = () => {
   useEffect(() => {
     const fetchSocietyData = async () => {
       try {
-        const docRef = doc(db, 'societies', '180 Degrees Consulting '); // Replace 'SocietyName' with the actual society's name
+        const docRef = doc(db, 'societies', 'Google Developer Group Dyal Singh College'); // Replace 'SocietyName' with the actual society's name
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {

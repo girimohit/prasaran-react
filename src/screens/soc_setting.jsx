@@ -34,7 +34,7 @@ const SocSetting = () => {
           alt="Profile"
           className="w-24 h-24 rounded-full object-cover mb-2"
         />
-        <h2 className="text-xl font-semibold">{societyData.username || 'Society Name'}</h2>
+        <h2 className="text-xl font-semibold">{societyData.username || 'Google Developer Group Dyal Singh College'}</h2>
         <p className="text-gray-500">@{societyData.username}</p>
         <button 
           onClick={handleEditProfile}

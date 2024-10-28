@@ -26,7 +26,7 @@ const EditSocietyDescription = () => {
     // Fetch data on component mount
     useEffect(() => {
       const fetchData = async () => {
-        const societyDocRef = doc(db, 'societies', '180 Degrees Consulting '); // Replace with actual doc ID
+        const societyDocRef = doc(db, 'societies', 'Google Developer Group Dyal Singh College'); // Replace with actual doc ID
         const societyDoc = await getDoc(societyDocRef);
 
         if (societyDoc.exists()) {
@@ -128,8 +128,11 @@ const EditSocietyDescription = () => {
     const handleCameraClick = () => fileInputRef.current.click();
     const handleProfileImageChange = (e) => {
       const file = e.target.files[0];
-      if (file) setProfileImage(file);
-    };
+      if (file) {
+          setProfileImage(file);
+          setProfileImageUrl(URL.createObjectURL(file)); // Show preview immediately
+      }
+  };
 
     return (
       <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
