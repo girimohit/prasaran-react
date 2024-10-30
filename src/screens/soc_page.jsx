@@ -84,6 +84,9 @@ const userImages = [
 const SocPage = () => {
   const navigate = useNavigate();  // Initialize the useNavigate hook
 
+  // Set `societyId` to a placeholder or fetch it dynamically as needed
+  const societyId = 'gdg_dsc';
+
   // State for society data
   const [societyData, setSocietyData] = useState({
     profileImageUrl: '',
@@ -95,7 +98,8 @@ const SocPage = () => {
   useEffect(() => {
     const fetchSocietyData = async () => {
       try {
-        const docRef = doc(db, 'societies', 'Google Developer Group Dyal Singh College'); // Replace 'SocietyName' with the actual society's name
+        // Adjusted path to use the nested Firestore structure
+        const docRef = doc(db, `societies/${societyId}/description`, 'main');
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -109,7 +113,7 @@ const SocPage = () => {
     };
 
     fetchSocietyData();
-  }, []);
+  }, [societyId]);
 
   const handleCreate_PostButtonClick = () => {
     navigate('/create-post');  // Redirect to the create_post page

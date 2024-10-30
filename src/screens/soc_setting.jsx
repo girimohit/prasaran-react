@@ -10,8 +10,9 @@ const SocSetting = () => {
 
 
     const handleEditProfile = () => {
-        navigate('/edit-society');
+      navigate('/edit-society', { state: { username: societyData.username } }); // Pass the username
     };
+  
 
     const goBack = () => {
         navigate(-1); // Navigate to the previous page

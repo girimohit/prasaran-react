@@ -3,15 +3,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { db, storage } from '../firebaseConfig';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
 
 const EditSocietyDescription = () => {
+    const location = useLocation();
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
-    const positionSectionRef = useRef(null); // Ref for positions section
+    const positionSectionRef = useRef(null);
 
-    const [username, setUsername] = useState('');
+    const username = location.state?.username || ''; // Get username from navigation state
+
     const [societyName, setSocietyName] = useState('');
     const [societyDescription, setSocietyDescription] = useState('');
     const [profileImage, setProfileImage] = useState(null);
@@ -19,87 +21,91 @@ const EditSocietyDescription = () => {
     const [email, setEmail] = useState('');
     const [headTeacherName, setHeadTeacherName] = useState('');
     const [headTeacherEmail, setHeadTeacherEmail] = useState('');
-    const [positions, setPositions] = useState([]); // Positions array
-    const [newPosition, setNewPosition] = useState(''); // New position input
-    const [editIndex, setEditIndex] = useState(null); // Track index for editing
+    const [positions, setPositions] = useState([]);
+    const [newPosition, setNewPosition] = useState('');
+    const [editIndex, setEditIndex] = useState(null);
 
-    // Fetch data on component mount
     useEffect(() => {
-      const fetchData = async () => {
-        const societyDocRef = doc(db, 'societies', 'Google Developer Group Dyal Singh College'); // Replace with actual doc ID
-        const societyDoc = await getDoc(societyDocRef);
+        const fetchData = async () => {
+            try {
+                const societyDocRef = doc(db, 'societies', username, 'description', 'main');
+                const societyDoc = await getDoc(societyDocRef);
 
-        if (societyDoc.exists()) {
-          const data = societyDoc.data();
-          setUsername(data.username || '');
-          setSocietyName(data.societyName || '');
-          setSocietyDescription(data.societyDescription || '');
-          setEmail(data.email || '');
-          setHeadTeacherName(data.headTeacherName || '');
-          setHeadTeacherEmail(data.headTeacherEmail || '');
-          setPositions(data.positions || []); // Set positions from database
+                if (societyDoc.exists()) {
+                    const data = societyDoc.data();
+                    setSocietyName(data.societyName || '');
+                    setSocietyDescription(data.societyDescription || '');
+                    setEmail(data.email || '');
+                    setHeadTeacherName(data.headTeacherName || '');
+                    setHeadTeacherEmail(data.headTeacherEmail || '');
+                    setPositions(data.positions || []);
+                    if (data.profileImageUrl) setProfileImageUrl(data.profileImageUrl);
+                }
+            } catch (error) {
+                console.error("Error fetching society data: ", error);
+            }
+        };
 
-          if (data.profileImageUrl) {
-            setProfileImageUrl(data.profileImageUrl);
-          }
-        }
-      };
-
-      fetchData();
-    }, []);
+        fetchData();
+    }, [username]);
 
     const handleSave = async () => {
       try {
-        let uploadedImageUrl = profileImageUrl;
-
-        if (profileImage) {
-          const imageRef = ref(storage, `societies/${societyName}/profile.jpg`);
-          await uploadBytes(imageRef, profileImage);
-          uploadedImageUrl = await getDownloadURL(imageRef);
-        }
-
-        const societyData = {
-          username,
-          societyName,
-          societyDescription,
-          profileImageUrl: uploadedImageUrl,
-          email,
-          headTeacherName,
-          headTeacherEmail,
-          positions // Save all custom positions in the array
-        };
-
-        await setDoc(doc(db, 'societies', societyName), societyData);
-        navigate('/soc_page');
+          // Upload new profile image if there is one
+          let uploadedImageUrl = profileImageUrl;
+          if (profileImage) {
+              const imageRef = ref(storage, `societies/${username}/profile.jpg`);
+              await uploadBytes(imageRef, profileImage);
+              uploadedImageUrl = await getDownloadURL(imageRef);
+          }
+  
+          // Fetch current data to retain `username` if it's already in the database
+          const societyDocRef = doc(db, 'societies', username, 'description', 'main');
+          const societyDoc = await getDoc(societyDocRef);
+  
+          // Retain existing `username` in the update, or fall back to an empty string if not present
+          const existingUsername = societyDoc.exists() ? societyDoc.data().username : username;
+  
+          const societyData = {
+              username: existingUsername, // Retain the username
+              societyName,
+              societyDescription,
+              profileImageUrl: uploadedImageUrl,
+              email,
+              headTeacherName,
+              headTeacherEmail,
+              positions
+          };
+  
+          // Update the document with the new data
+          await setDoc(societyDocRef, societyData);
+          navigate('/soc_page');
       } catch (error) {
-        console.error("Error saving society information: ", error);
-        alert("Failed to save society information. Try again.");
+          console.error("Error saving society information: ", error);
+          alert("Failed to save society information. Try again.");
       }
-    };
+  };
+  
 
     const handleAddPosition = () => {
-      if (newPosition.trim()) {
-        if (editIndex !== null) {
-          // Edit mode: update the existing position
-          const updatedPositions = [...positions];
-          updatedPositions[editIndex] = newPosition;
-          setPositions(updatedPositions);
-          setEditIndex(null);
-        } else {
-          // Add mode: add new position
-          setPositions([...positions, newPosition]);
+        if (newPosition.trim()) {
+            if (editIndex !== null) {
+                const updatedPositions = [...positions];
+                updatedPositions[editIndex] = newPosition;
+                setPositions(updatedPositions);
+                setEditIndex(null);
+            } else {
+                setPositions([...positions, newPosition]);
+            }
+            setNewPosition('');
         }
-        setNewPosition('');
-      }
     };
 
     const handleEditPosition = (index) => {
         if (editIndex === index) {
-            // If the selected position is tapped again, unselect it
             setEditIndex(null);
             setNewPosition('');
         } else {
-            // Otherwise, set it for editing
             setNewPosition(positions[index]);
             setEditIndex(index);
         }
@@ -127,12 +133,12 @@ const EditSocietyDescription = () => {
 
     const handleCameraClick = () => fileInputRef.current.click();
     const handleProfileImageChange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-          setProfileImage(file);
-          setProfileImageUrl(URL.createObjectURL(file)); // Show preview immediately
-      }
-  };
+        const file = e.target.files[0];
+        if (file) {
+            setProfileImage(file);
+            setProfileImageUrl(URL.createObjectURL(file));
+        }
+    };
 
     return (
       <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
@@ -177,16 +183,6 @@ const EditSocietyDescription = () => {
           {/* Form Fields */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">User Name</label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter user name"
-                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-              />
-            </div>
-            <div>
               <label className="block text-sm font-medium text-gray-700">Society Name</label>
               <input
                 type="text"
@@ -206,6 +202,7 @@ const EditSocietyDescription = () => {
               />
             </div>
 
+          {/* Additional Fields */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
@@ -237,53 +234,55 @@ const EditSocietyDescription = () => {
             />
           </div>
 
-            {/* Dynamic Positions Field */}
-            <div ref={positionSectionRef}>
-                        <label className="block text-sm font-medium text-gray-700">Add or Edit Position</label>
-                        <input
-                            type="text"
-                            value={newPosition}
-                            onChange={(e) => setNewPosition(e.target.value)}
-                            placeholder="Enter position"
-                            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-                        />
-                        <button
-                            onClick={handleAddPosition}
-                            className="mt-2 py-1 px-3 bg-black text-white font-semibold rounded-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-                        >
-                            {editIndex !== null ? 'Update Position' : 'Add Position'}
-                        </button>
-                        <div className="mt-2 space-y-1">
-                            {positions.map((position, index) => (
-                                <div key={index} className="flex items-center space-x-2">
-                                    <span
-                                        onClick={() => handleEditPosition(index)}
-                                        className="flex-grow inline-block p-1 bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300"
-                                    >
-                                        {position}
-                                    </span>
-                                    {editIndex === index && (
-                                        <FaTimes
-                                            onClick={() => handleDeletePosition(index)}
-                                            className="text-red-500 cursor-pointer"
-                                        />
-                                    )}
-                                </div>
-                            ))}
-                        </div>
+          {/* Dynamic Positions Field */}
+          <div ref={positionSectionRef}>
+                    <label className="block text-sm font-medium text-gray-700">Add or Edit Position</label>
+                    <input
+                        type="text"
+                        value={newPosition}
+                        onChange={(e) => setNewPosition(e.target.value)}
+                        placeholder="Enter position"
+                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+                    <button
+                        onClick={handleAddPosition}
+                        className="mt-2 py-1 px-3 bg-black text-white font-semibold rounded-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                    >
+                        {editIndex !== null ? 'Update Position' : 'Add Position'}
+                    </button>
+                    <div className="mt-2 space-y-1">
+                        {positions.map((position, index) => (
+                            <div key={index} className="flex items-center space-x-2">
+                                <span
+                                    onClick={() => handleEditPosition(index)}
+                                    className="flex-grow inline-block p-1 bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300"
+                                >
+                                    {position}
+                                </span>
+                                {editIndex === index && (
+                                    <FaTimes
+                                        onClick={() => handleDeletePosition(index)}
+                                        className="text-red-500 cursor-pointer"
+                                    />
+                                )}
+                            </div>
+                        ))}
                     </div>
                 </div>
+          </div>
 
-          {/* Save Button */}
+        {/* Save Button */}
+        <div className="mt-6">
           <button
             onClick={handleSave}
-            className="w-full mt-6 py-2 bg-black text-white font-semibold rounded-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+            className="w-full px-4 py-2 text-white bg-black rounded-md hover:bg-gray-800"
           >
-            Save
+            Save Changes
           </button>
         </div>
       </div>
-    );
+    </div>
+  );
 };
 
 export default EditSocietyDescription;
