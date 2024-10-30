@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { storage } from "../firebaseConfig";
 import { ref, uploadBytes, deleteObject, getDownloadURL } from "firebase/storage"; 
 import { useNavigate } from "react-router-dom";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 const CreatePost = () => {
   const [selectedImages, setSelectedImages] = useState([]);
@@ -66,10 +67,19 @@ const CreatePost = () => {
 
   return (
     <div className="min-h-screen bg-[#DEE2E6] text-gray-700 flex flex-col items-center relative px-4 pt-8">
-      <h1 className="text-xl font-bold mb-4">Create Post</h1>
+      {/* Back Button */}
+      <IoMdArrowRoundBack  
+        onClick={() => navigate('/soc_page')}
+        className="text-2xl cursor-pointer absolute top-4 left-4 text-gray-700 hover:text-black"
+      />
+  
+      {/* Centered Title */}
+      <h1 className="text-xl font-bold mb-4 absolute top-4 left-1/2 transform -translate-x-1/2">
+        Create Post
+      </h1>
 
       {/* Selected Images Display */}
-      <div className="w-full max-w-3xl aspect-video bg-gray-800 rounded-lg overflow-hidden mb-4">
+      <div className="w-full max-w-3xl aspect-video bg-gray-800 rounded-lg overflow-hidden mb-4 mt-8">
         {selectedImages.length > 0 ? (
           <img
             src={selectedImages[0].preview}  // Display the first selected image
