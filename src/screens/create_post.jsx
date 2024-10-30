@@ -70,16 +70,16 @@ const CreatePost = () => {
       {/* Back Button */}
       <IoMdArrowRoundBack  
         onClick={() => navigate('/soc_page')}
-        className="text-2xl cursor-pointer absolute top-4 left-4 text-gray-700 hover:text-black"
+        className="text-2xl cursor-pointer absolute top-2 left-2 text-gray-700 hover:text-black"
       />
-  
+
       {/* Centered Title */}
-      <h1 className="text-xl font-bold mb-4 absolute top-4 left-1/2 transform -translate-x-1/2">
+      <h1 className="text-xl font-bold mb-4 absolute top-2 left-1/2 transform -translate-x-1/2">
         Create Post
       </h1>
 
       {/* Selected Images Display */}
-      <div className="w-full max-w-3xl aspect-video bg-gray-800 rounded-lg overflow-hidden mb-4 mt-8">
+      <div className="w-full max-w-3xl aspect-video bg-gray-800 rounded-lg overflow-hidden mb-4 mt-4">
         {selectedImages.length > 0 ? (
           <img
             src={selectedImages[0].preview}  // Display the first selected image

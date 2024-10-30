@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react"; // Import Swiper and SwiperSlide
 import { Navigation, Pagination } from "swiper/modules"; // Correct imports for Swiper modules
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 import "swiper/css"; // Core Swiper CSS
 import "swiper/css/navigation"; // For Navigation arrows
 import "swiper/css/pagination"; // For Pagination dots
 
 const EditPost = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { galleryImages } = location.state || {}; // Get galleryImages from CreatePost
 
   const [caption, setCaption] = useState("");
@@ -20,10 +23,19 @@ const EditPost = () => {
 
   return (
     <div className="min-h-screen bg-[#DEE2E6] text-gray-700 flex flex-col items-center relative px-4 pt-8">
-      <h1 className="text-xl font-bold mb-4">Edit Post</h1>
+      {/* Back Button */}
+      <IoMdArrowRoundBack  
+        onClick={() => navigate('/create-post')}
+        className="text-2xl cursor-pointer absolute top-2 left-2 text-gray-700 hover:text-black"
+      />
+
+      {/* Centered Title */}
+      <h1 className="text-xl font-bold mb-4 absolute top-2 left-1/2 transform -translate-x-1/2">
+        Edit Post
+      </h1>
 
       {/* Carousel of All Images */}
-      <div className="w-full max-w-3xl aspect-video bg-gray-800 rounded-lg overflow-hidden mb-4">
+      <div className="w-full max-w-3xl aspect-video bg-gray-800 rounded-lg overflow-hidden mb-4 mt-4">
         {galleryImages && galleryImages.length > 0 ? (
           <Swiper
             spaceBetween={10}
