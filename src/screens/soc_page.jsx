@@ -116,7 +116,8 @@ const SocPage = () => {
   }, [societyId]);
 
   const handleCreate_PostButtonClick = () => {
-    navigate('/create-post');  // Redirect to the create_post page
+    const postId = `post_${Date.now()}`; // Generate a unique post ID based on timestamp
+    navigate('/create-post', { state: { username: societyData.username, postId } }); // Pass username and postId
   };
 
   const handleSocSettingButtonClick = () => {

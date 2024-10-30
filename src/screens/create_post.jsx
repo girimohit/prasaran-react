@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { storage } from "../firebaseConfig";
 import { ref, uploadBytes, deleteObject, getDownloadURL } from "firebase/storage"; 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
 const CreatePost = () => {
@@ -9,6 +9,10 @@ const CreatePost = () => {
   const [galleryImages, setGalleryImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Retrieve username and postId from navigation state
+  const { username, postId } = location.state || {};
 
   // Maximum image selection limit
   const MAX_IMAGES = 9;
@@ -28,12 +32,18 @@ const CreatePost = () => {
     // Map over files and upload each image to Firebase
     const uploadedImages = await Promise.all(
       files.map(async (file) => {
-        const storageRef = ref(storage, `post_images/${file.name}`);
+        const storageRef = ref(storage, `societies/${username}/${postId}/images/${file.name}`);
         await uploadBytes(storageRef, file); // Upload the file
         const url = await getDownloadURL(storageRef); // Get the download URL
-        return { file, preview: URL.createObjectURL(file), url, filePath: `post_images/${file.name}` };
+    
+        return {
+          file,
+          preview: URL.createObjectURL(file),
+          url,
+          filePath: `societies/${username}/${postId}/images/${file.name}` // Corrected line
+        };
       })
-    );
+    );    
 
     // Update the state with the uploaded images
     setSelectedImages((prev) => [...prev, ...uploadedImages]);
