@@ -26,37 +26,34 @@ const CreatePost = () => {
 
   // Fetch images and drafts for the current postId and user
   useEffect(() => {
-    console.log("Location state on mount:", location.state);
-  
     const fetchImages = async () => {
       if (location.state?.images && location.state.images.length > 0) {
         const draftImages = await Promise.all(
-          location.state.images.map(async (imagePath) => {
-            const url = await getDownloadURL(ref(storage, imagePath));
-            return { url, preview: url, filePath: imagePath };
+          location.state.images.map(async (image) => {
+            const url = await getDownloadURL(ref(storage, image.filePath));
+            return { url, preview: url, filePath: image.filePath };
           })
         );
-  
         setSelectedImages(draftImages);
         setGalleryImages(draftImages);
       } else if (username && postId) {
         const listRef = ref(storage, `societies/${username}/${postId}/images`);
         const result = await listAll(listRef);
-  
+        
         const fetchedImages = await Promise.all(
           result.items.map(async (item) => {
             const url = await getDownloadURL(item);
             return { url, preview: url, filePath: item.fullPath };
           })
         );
-  
         setSelectedImages(fetchedImages);
         setGalleryImages(fetchedImages);
       }
     };
   
     fetchImages();
-  }, [username, postId, location.state]);  
+  }, [username, postId, location.state]);
+    
 
   // Handle file selection and automatic upload
   const handleImageSelection = async (event) => {

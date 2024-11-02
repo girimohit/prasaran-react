@@ -20,7 +20,7 @@ const EditPost = () => {
   const handlePost = async () => {
     try {
       // Prepare image URLs for Firestore
-      // const imageUrls = galleryImages.map((image) => image.url);
+      const imageUrls = galleryImages.map((image) => image.url);
 
       // Get current date and time
       const currentDate = new Date();
@@ -29,6 +29,7 @@ const EditPost = () => {
 
       // Save data to Firestore under societies/{username}/post/{post_id}/main
       await setDoc(doc(db, `societies/${username}/post/${postId}`), {
+        images: imageUrls,
         caption,
         timestamp: serverTimestamp(), // Automatically set server time
         date, // Store date as a readable string
@@ -47,7 +48,13 @@ const EditPost = () => {
   return (
     <div className="min-h-screen bg-[#DEE2E6] text-gray-700 flex flex-col items-center relative px-4 pt-8">
       <IoMdArrowRoundBack  
-        onClick={() => navigate('/create-post')}
+        onClick={() => navigate("/create-post", {
+          state: { 
+            postId, 
+            username, 
+            images: galleryImages // Pass the current images as state
+          } 
+        })}
         className="text-2xl cursor-pointer absolute top-2 left-2 text-gray-700 hover:text-black"
       />
 
