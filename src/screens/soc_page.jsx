@@ -4,46 +4,7 @@ import { FiPlus, FiMenu } from 'react-icons/fi';
 import { FaThumbsUp, FaComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
-
-// Posts array
-const posts = [
-  {
-    id: 1,
-    postImage: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/event_img.png?alt=media&token=e7eb6803-b7f9-4a9b-bb21-1b75c060f523',
-    caption: 'Caption here for post ...',
-    likes: 500,
-    comments: 154,
-  },
-  {
-    id: 2,
-    postImage: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/event_img.png?alt=media&token=e7eb6803-b7f9-4a9b-bb21-1b75c060f523',
-    caption: 'Caption here for post ...',
-    likes: 450,
-    comments: 120,
-  },
-  {
-    id: 3,
-    postImage: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/event_img.png?alt=media&token=e7eb6803-b7f9-4a9b-bb21-1b75c060f523',
-    caption: 'Caption here for post ...',
-    likes: 520,
-    comments: 160,
-  },
-  {
-    id: 4,
-    postImage: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/event_img.png?alt=media&token=e7eb6803-b7f9-4a9b-bb21-1b75c060f523',
-    caption: 'Caption here for post ...',
-    likes: 610,
-    comments: 190,
-  },
-  {
-    id: 5,
-    postImage: 'https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/event_img.png?alt=media&token=e7eb6803-b7f9-4a9b-bb21-1b75c060f523',
-    caption: 'Caption here for post ...',
-    likes: 480,
-    comments: 130,
-  },
-];
+import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 
 // User Images array for Friends/Society Cards
 const userImages = [
@@ -93,6 +54,7 @@ const SocPage = () => {
     username: '',
     societyDescription: '',
   });
+  const [posts, setPosts] = useState([]); // State to hold fetched posts
 
   // Fetch society data on component mount
   useEffect(() => {
@@ -112,7 +74,28 @@ const SocPage = () => {
       }
     };
 
+    const fetchPosts = async () => {
+      try {
+        const postsCollectionRef = collection(db, `societies/${societyId}/post`);
+        const querySnapshot = await getDocs(postsCollectionRef);
+    
+        // Map through each post document and get its data
+        const postsData = querySnapshot.docs.map((postDoc) => {
+          const postData = postDoc.data();
+          return {
+            id: postDoc.id,
+            ...postData,  // Includes fields like 'caption', and 'images' array
+          };
+        });
+    
+        setPosts(postsData);
+      } catch (error) {
+        console.error("Error fetching posts and images: ", error);
+      }
+    };
+
     fetchSocietyData();
+    fetchPosts();
   }, [societyId]);
 
   const handleCreate_PostButtonClick = () => {
@@ -202,33 +185,33 @@ const SocPage = () => {
       <div className="p-6">
         {posts.map((post) => (
           <div key={post.id} className="my-8 bg-[#F8F8FF] rounded-2xl p-2">
-            {/* Image Section */}
+            {/* Post details */}
             <div className="flex items-center space-x-4 bg-[#F8F8FF] pl-2 py-2">
               <img
                 className="w-10 h-10 rounded-full"
-                src={societyData.profileImageUrl || 'https://via.placeholder.com/100'}
+                src={societyData.profileImageUrl || "https://via.placeholder.com/100"}
                 alt="profile"
               />
               <div>
-                <h2 className="text-sm font-semibold">{societyData.username || 'Society Name'}</h2>
-                <p className="text-xs text-gray-500">{post.content}</p>
+                <h2 className="text-sm font-semibold">
+                  {societyData.username || "Society Name"}
+                </h2>
+                <p className="text-xs text-gray-500">{post.caption}</p>
               </div>
             </div>
-
-            {/* Post Image */}
+        
+            {/* Display each image in the images array */}
             <div className="px-2">
-              <img
-                className="w-full rounded-2xl object-cover aspect-video"
-                src={post.postImage}
-                alt="Post"
-              />
+              {post.images && post.images.map((image, index) => (
+                <img
+                  key={index}
+                  className="w-full rounded-2xl object-cover aspect-video mb-2"
+                  src={image}
+                  alt={`Post Images ${index + 1}`}
+                />
+              ))}
             </div>
-
-            {/* Caption */}
-            <div className="text-sm text-gray-700 mb-0 pl-2">
-              {post.caption}
-            </div>
-
+            
             {/* Likes and Comments Section */}
             <div className="w-3/4 flex items-center justify-around bg-[#DEE2E6] p-2 m-2 rounded-lg">
               <div className="flex items-center space-x-1">
@@ -243,6 +226,7 @@ const SocPage = () => {
           </div>
         ))}
       </div>
+
 
       {/* Create Post Button */}
       <div className="fixed bottom-10 right-10">
