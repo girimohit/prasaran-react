@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { storage, db } from "../firebaseConfig";
-import { ref, uploadBytes, deleteObject, getDownloadURL, listAll } from "firebase/storage"; 
-import { doc, getDocs, deleteDoc, setDoc, collection, arrayUnion  } from "firebase/firestore"; // Firestore methods
+import { ref, uploadBytes, deleteObject, getDownloadURL } from "firebase/storage"; 
+import { doc, getDocs, deleteDoc, setDoc, collection, arrayUnion, arrayRemove } from "firebase/firestore"; // Firestore methods
 // import { doc, getDocs, deleteDoc, setDoc, collection } from "firebase/firestore"; // Import arrayUnion
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -19,40 +19,38 @@ const CreatePost = () => {
   const location = useLocation();
 
   // Retrieve username and postId from navigation state
-  const { username, postId } = location.state || {};
-
+  const { username, postId, images } = location.state || {};
+ 
   // Maximum image selection limit
   const MAX_IMAGES = 9;
 
   // Fetch images and drafts for the current postId and user
   useEffect(() => {
     const fetchImages = async () => {
-      if (location.state?.images && location.state.images.length > 0) {
+      if (images && images.length > 0) {
         const draftImages = await Promise.all(
-          location.state.images.map(async (image) => {
-            const url = await getDownloadURL(ref(storage, image.filePath));
-            return { url, preview: url, filePath: image.filePath };
+          images.map(async (imagePath) => {
+            if (typeof imagePath === 'string') { // Ensure imagePath is a string
+              const imageRef = ref(storage, imagePath);
+              const url = await getDownloadURL(imageRef);
+              return { url, preview: url, filePath: imagePath };
+            } else {
+              console.error("Invalid image path format:", imagePath);
+              return null;
+            }
           })
         );
-        setSelectedImages(draftImages);
-        setGalleryImages(draftImages);
-      } else if (username && postId) {
-        const listRef = ref(storage, `societies/${username}/${postId}/images`);
-        const result = await listAll(listRef);
-        
-        const fetchedImages = await Promise.all(
-          result.items.map(async (item) => {
-            const url = await getDownloadURL(item);
-            return { url, preview: url, filePath: item.fullPath };
-          })
-        );
-        setSelectedImages(fetchedImages);
-        setGalleryImages(fetchedImages);
+        setSelectedImages(draftImages.filter(Boolean));
+        setGalleryImages(draftImages.filter(Boolean));
       }
+      // Additional code to fetch from Firebase if no images are in state
+      // ...
     };
   
     fetchImages();
-  }, [username, postId, location.state]);
+  }, [username, postId, images]);
+  
+  
     
 
   // Handle file selection and automatic upload
@@ -103,10 +101,21 @@ const CreatePost = () => {
   };
 
   // Handle removing an image from selected images
+  // Handle removing an image from selected images
   const handleRemoveImage = async (image) => {
     try {
       const storageRef = ref(storage, image.filePath);
-      await deleteObject(storageRef); // Delete image from Firebase
+      await deleteObject(storageRef); // Delete image from Firebase Storage
+
+      // Remove the image URL from Firestore
+      const postRef = doc(db, `societies/${username}/post/${postId}`);
+      await setDoc(
+        postRef,
+        {
+          images: arrayRemove(image.url), // Use Firestore's arrayRemove method to remove the URL
+        },
+        { merge: true }
+      );
 
       // Remove the image from the selected images and gallery states
       setSelectedImages((prev) => prev.filter((img) => img.url !== image.url));
@@ -116,50 +125,63 @@ const CreatePost = () => {
     }
   };
 
+
   // Fetch drafts and images from Firestore
   useEffect(() => {
     const fetchDrafts = async () => {
-      const draftsRef = collection(db, `societies/${username}/drafts`);
+      const draftsRef = collection(db, `societies/${username}/post`);
       const draftsSnapshot = await getDocs(draftsRef);
-
-      // Fetch images for each draft based on postId
+  
+      // Fetch drafts where isDraft is true
       const fetchedDrafts = await Promise.all(
-        draftsSnapshot.docs.map(async (doc) => {
-          const draftData = doc.data();
-          let imageUrl = null;
-
-          // Fetch the first image URL from Firebase storage using postId
-          if (draftData.images && draftData.images.length > 0) {
-            const imageRef = ref(storage, draftData.images[0]);
-            imageUrl = await getDownloadURL(imageRef);
-          }
-
-          return {
-            id: doc.id,
-            timestamp: draftData.timestamp,
-            imageUrl, 
-            images: draftData.images
-          };
-        })
+        draftsSnapshot.docs
+          .filter((doc) => doc.data().isDraft) // Filter for drafts only
+          .map(async (doc) => {
+            const draftData = doc.data();
+            let imageUrl = null;
+  
+            // Fetch the first image URL from Firebase storage using postId
+            if (draftData.images && draftData.images.length > 0) {
+              const imageRef = ref(storage, draftData.images[0]);
+              imageUrl = await getDownloadURL(imageRef);
+            }
+  
+            return {
+              id: doc.id,
+              timestamp: draftData.timestamp,
+              imageUrl,
+              images: draftData.images,
+            };
+          })
       );
-
+  
       setDrafts(fetchedDrafts);
     };
-
+  
     fetchDrafts();
   }, [username]);
+  
 
-  // Save draft to Firestore when navigating back
+  // Save draft or delete post if no images are left, using post document directly
   const handleSaveDraft = async () => {
+    const postRef = doc(db, `societies/${username}/post/${postId}`);
+
     if (selectedImages.length > 0) {
-      await setDoc(doc(db, `societies/${username}/drafts`, postId), {
+      // Update the post document with current images
+      await setDoc(postRef, {
         postId,
         images: selectedImages.map((img) => img.filePath),
         timestamp: new Date().toISOString(),
-      });
+        isDraft: true // Mark this post as a draft
+      }, { merge: true });
+    } else {
+      // If no images are left, delete the post document
+      await deleteDoc(postRef);
     }
-    navigate("/soc_page");
+
+    navigate("/soc_page"); // Navigate back to soc_page
   };
+
 
   // Handle draft actions
   const handleEditDraft = (draft) => {
@@ -171,11 +193,29 @@ const CreatePost = () => {
         images: draft.images || []  // Pass images from draft
       } 
     });
-  };    
+  };      
 
-  const handleDeleteDraft = async (draftId) => {
-    await deleteDoc(doc(db, `societies/${username}/drafts`, draftId));
-    setDrafts(drafts.filter((draft) => draft.id !== draftId)); // Remove deleted draft from state
+  const handleDeleteDraft = async (draft) => {
+    try {
+      // Delete images from Firebase Storage
+      if (draft.images && draft.images.length > 0) {
+        const deletePromises = draft.images.map((filePath) => {
+          const imageRef = ref(storage, filePath);
+          return deleteObject(imageRef); // Delete each image
+        });
+        await Promise.all(deletePromises); // Wait for all images to be deleted
+      }
+
+      // Delete the draft document from Firestore
+      const draftRef = doc(db, `societies/${username}/post/${draft.id}`);
+      await deleteDoc(draftRef);
+
+      // Update the local state to remove the deleted draft
+      setDrafts((prevDrafts) => prevDrafts.filter((d) => d.id !== draft.id));
+      setDraftOptionsOpen(null); // Close the options menu
+    } catch (error) {
+      console.error("Error deleting draft:", error);
+    }
   };
 
   // Close menu if clicked outside
@@ -238,7 +278,7 @@ const CreatePost = () => {
                   <div className="absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-2xl z-50">
                     <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">Schedule</button>
                     <button onClick={() => handleEditDraft(draft)} className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">Edit</button>
-                    <button onClick={() => handleDeleteDraft(draft.id)} className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-200">Delete</button>
+                    <button onClick={() => handleDeleteDraft(draft)} className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-200">Delete</button>
                   </div>
                 )}
               </div>

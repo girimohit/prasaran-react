@@ -52,7 +52,7 @@ const EditPost = () => {
           state: { 
             postId, 
             username, 
-            images: galleryImages // Pass the current images as state
+            images: galleryImages.map(img => img.filePath) // Pass the current images as state
           } 
         })}
         className="text-2xl cursor-pointer absolute top-2 left-2 text-gray-700 hover:text-black"
