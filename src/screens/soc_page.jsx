@@ -196,7 +196,7 @@ const SocPage = () => {
                 <h2 className="text-sm font-semibold">
                   {societyData.username || "Society Name"}
                 </h2>
-                <p className="text-xs text-gray-500">{post.caption}</p>
+                {/* <p className="text-xs text-gray-500">{post.content}</p> */}
               </div>
             </div>
         
@@ -210,6 +210,11 @@ const SocPage = () => {
                   alt={`Post Images ${index + 1}`}
                 />
               ))}
+            </div>
+
+            {/* Caption */}
+            <div className="text-sm text-gray-700 mb-0 pl-2">
+              {post.caption}
             </div>
             
             {/* Likes and Comments Section */}
