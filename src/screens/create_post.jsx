@@ -262,30 +262,35 @@ const CreatePost = () => {
 
       {/* Drafts Display */}
       <div className="w-full max-w-3xl m-4">
-        <h2 className="text-lg font-semibold mb-2">Drafts</h2>
-        <ul className="space-y-2">
-          {drafts.map((draft) => (
-            <li key={draft.id} className="flex justify-between items-center bg-gray-100 p-3 rounded-xl">
-              <div className="flex items-center space-x-3">
-                {draft.imageUrl && (
-                  <img src={draft.imageUrl} alt="Draft preview" className="w-16 h-16 object-cover rounded-lg" />
-                )}
-                <p>{new Date(draft.timestamp).toLocaleString()}</p>
-              </div>
-              <div className="relative" ref={menuRef}>
-                <BsThreeDotsVertical className="cursor-pointer" onClick={() => toggleMenu(draft.id)} />
-                {draftOptionsOpen === draft.id && (
-                  <div className="absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-2xl z-50">
-                    <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">Schedule</button>
-                    <button onClick={() => handleEditDraft(draft)} className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">Edit</button>
-                    <button onClick={() => handleDeleteDraft(draft)} className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-200">Delete</button>
+        {drafts.length > 0 && (
+          <>
+            <h2 className="text-lg font-semibold mb-2">Drafts</h2>
+            <ul className="space-y-2">
+              {drafts.map((draft) => (
+                <li key={draft.id} className="flex justify-between items-center bg-gray-100 p-3 rounded-xl">
+                  <div className="flex items-center space-x-3">
+                    {draft.imageUrl && (
+                      <img src={draft.imageUrl} alt="Draft preview" className="w-16 h-16 object-cover rounded-lg" />
+                    )}
+                    <p>{new Date(draft.timestamp).toLocaleString()}</p>
                   </div>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
+                  <div className="relative" ref={menuRef}>
+                    <BsThreeDotsVertical className="cursor-pointer" onClick={() => toggleMenu(draft.id)} />
+                    {draftOptionsOpen === draft.id && (
+                      <div className="absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-2xl z-50">
+                        <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">Schedule</button>
+                        <button onClick={() => handleEditDraft(draft)} className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">Edit</button>
+                        <button onClick={() => handleDeleteDraft(draft)} className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-200">Delete</button>
+                      </div>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
+
 
       {/* Selected Images Display */}
       <div className="w-full max-w-3xl aspect-video bg-gray-800 rounded-lg overflow-hidden mb-4 mt-4">

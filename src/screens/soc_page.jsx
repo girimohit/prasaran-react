@@ -79,20 +79,26 @@ const SocPage = () => {
         const postsCollectionRef = collection(db, `societies/${societyId}/post`);
         const querySnapshot = await getDocs(postsCollectionRef);
     
-        // Map through each post document and get its data
-        const postsData = querySnapshot.docs.map((postDoc) => {
-          const postData = postDoc.data();
-          return {
-            id: postDoc.id,
-            ...postData,  // Includes fields like 'caption', and 'images' array
-          };
-        });
+        // Filter and map through each post document and get its data
+        const postsData = querySnapshot.docs
+          .map((postDoc) => {
+            const postData = postDoc.data();
+            // Ensure both date and time are present
+            if (postData.date && postData.time) {
+              return {
+                id: postDoc.id,
+                ...postData, // Includes fields like 'caption', 'images', 'date', and 'time'
+              };
+            }
+            return null; // Return null for posts that don't meet criteria
+          })
+          .filter((post) => post !== null); // Filter out null values
     
         setPosts(postsData);
       } catch (error) {
         console.error("Error fetching posts and images: ", error);
       }
-    };
+    };    
 
     fetchSocietyData();
     fetchPosts();
