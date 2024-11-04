@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { FiPlus, FiMenu } from 'react-icons/fi';
+import { FiPlus, FiMenu, FiMoreVertical } from 'react-icons/fi';
 import { FaThumbsUp, FaComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../firebaseConfig';
-import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { db, storage } from '../firebaseConfig';
+import { doc, setDoc, getDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
+import { deleteObject, ref } from 'firebase/storage';
 
 // User Images array for Friends/Society Cards
 const userImages = [
@@ -55,6 +56,8 @@ const SocPage = () => {
     societyDescription: '',
   });
   const [posts, setPosts] = useState([]); // State to hold fetched posts
+  const [menuOpen, setMenuOpen] = useState(null); // State to track which post's menu is open
+  const menuRef = useRef(null); // Ref to track the meatball menu
 
   // Fetch society data on component mount
   useEffect(() => {
@@ -103,6 +106,58 @@ const SocPage = () => {
     fetchSocietyData();
     fetchPosts();
   }, [societyId]);
+
+  const handleArchivePost = async (postId, post) => {
+    try {
+      // Move post data to the 'archive' collection
+      const archiveRef = doc(db, `societies/${societyId}/archive`, postId);
+      await setDoc(archiveRef, post);
+      // Remove post from the main posts collection
+      await deleteDoc(doc(db, `societies/${societyId}/post`, postId));
+      // Update local state
+      setPosts((prevPosts) => prevPosts.filter((p) => p.id !== postId));
+    } catch (error) {
+      console.error("Error archiving post: ", error);
+    }
+  };
+
+  const handleDeletePost = async (postId, images) => {
+    try {
+      // Loop through each image URL and delete it from Firebase Storage
+      const deleteImagePromises = images.map(async (imageURL) => {
+        // Extract file name from image URL (assuming it is at the end of the URL)
+        const fileName = imageURL.split('/').pop().split('?')[0];
+        const storageRef = ref(storage, `societies/${societyData.username}/${postId}/images/${fileName}`);
+        
+        await deleteObject(storageRef); // Delete each image
+      });
+
+      // Wait until all images are deleted
+      await Promise.all(deleteImagePromises);
+
+      // Delete post document from Firestore
+      await deleteDoc(doc(db, `societies/${societyId}/post`, postId));
+
+      // Remove post from local state after deletion
+      setPosts((prevPosts) => prevPosts.filter((p) => p.id !== postId));
+    } catch (error) {
+      console.error("Error deleting post or images: ", error);
+    }
+  };
+
+  // Handle click outside the menu to close it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleCreate_PostButtonClick = () => {
     const postId = `post_${Date.now()}`; // Generate a unique post ID based on timestamp
@@ -204,8 +259,33 @@ const SocPage = () => {
                 </h2>
                 {/* <p className="text-xs text-gray-500">{post.content}</p> */}
               </div>
+              {/* Meatball Menu Button */}
+              <button
+                onClick={() => setMenuOpen(menuOpen === post.id ? null : post.id)}
+                className="text-xl text-gray-700 focus:outline-none absolute right-12"
+              >
+                <FiMoreVertical />
+              </button>
             </div>
-        
+
+            {/* Meatball Menu Options */}
+            {menuOpen === post.id && (
+                <div ref={menuRef} className="absolute right-6 bg-white shadow-lg rounded-lg z-50">
+                  <button
+                    onClick={() => handleArchivePost(post.id, post)}
+                    className="p-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  >
+                    Archive
+                  </button>
+                  <button
+                    onClick={() => handleDeletePost(post.id, post.images)}
+                    className="p-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+
             {/* Display each image in the images array */}
             <div className="px-2">
               {post.images && post.images.map((image, index) => (

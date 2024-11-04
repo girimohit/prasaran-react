@@ -12,17 +12,17 @@ const SocSetting = () => {
     const handleEditProfile = () => {
       navigate('/edit-society', { state: { username: societyData.username } }); // Pass the username
     };
-  
 
-    const goBack = () => {
-        navigate(-1); // Navigate to the previous page
+    // Inside the handleArchivePost function
+    const handleArchivePost = () => {
+      navigate('/post_archive', { state: { societyData } });  // Pass societyData as state
     };
 
   return (
     <div className="flex flex-col items-center bg-gray-100 min-h-screen p-4">
       {/* Header */}
       <div className="w-full relative flex items-center justify-center text-gray-700 mb-6">
-        <button onClick={goBack} className="absolute left-0 p-2">
+        <button onClick={() => navigate('/soc_page')} className="absolute left-0 p-2">
           <IoMdArrowRoundBack size={24} />
         </button>
         <h1 className="text-lg font-semibold">Profile</h1>
@@ -56,7 +56,12 @@ const SocSetting = () => {
         {/* My Activity */}
         <div className="flex items-center py-2">
             <IoTimeOutline size={20} className="text-gray-500" />
-            <p className="text-gray-700 font-medium">&ensp; My Activity</p>
+            <button 
+            onClick={handleArchivePost}
+            className="text-gray-700 font-medium"
+            >
+              &ensp; Archive
+            </button>
         </div>
 
         {/* Change Passcode */}

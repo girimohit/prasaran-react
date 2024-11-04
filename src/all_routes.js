@@ -15,6 +15,7 @@ import EditSocietyDescription from "./screens/edit_soc_description";
 import SocSetting from "./screens/soc_setting";
 import SocMembers from "./screens/soc_members";
 import SocFollowers from "./screens/soc_followers";
+import ArchivePage from "./screens/post_archive";
 
 const AllRoutes = () => {
   const location = useLocation(); // Get the location object
@@ -42,6 +43,7 @@ const AllRoutes = () => {
         <Route path="/soc_setting" element={<SocSetting />} />
         <Route path="/soc_members" element={<SocMembers />} />
         <Route path="/soc_followers" element={<SocFollowers />} />
+        <Route path="/post_archive" element={<ArchivePage />} />
       </Routes>
       {showNavPaths.includes(location.pathname) && <BottomNavBar />}
     </>
