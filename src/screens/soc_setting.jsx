@@ -8,7 +8,6 @@ const SocSetting = () => {
     const location = useLocation();
     const societyData = location.state?.societyData || {};
 
-
     const handleEditProfile = () => {
       navigate('/edit-society', { state: { username: societyData.username } }); // Pass the username
     };
@@ -16,6 +15,15 @@ const SocSetting = () => {
     // Inside the handleArchivePost function
     const handleArchivePost = () => {
       navigate('/post_archive', { state: { societyData } });  // Pass societyData as state
+    };
+
+    // Inside the handleSavePost function
+    const handleSavePost = () => {
+      navigate('/save_post', { 
+          state: { 
+              societyData 
+          }
+      });
     };
 
   return (
@@ -74,7 +82,12 @@ const SocSetting = () => {
         {/* Saved Posts */}
         <div className="flex items-center py-2 px-4 border-b border-gray-600">
             <IoBookmarkOutline size={20} className="text-gray-500" />
-            <p className="text-gray-700 font-medium">&ensp; Saved Posts</p>
+            <button 
+            onClick={handleSavePost}
+            className="text-gray-700 font-medium"
+            >
+              &ensp; Saved Posts
+            </button>
         </div>
 
         {/* Help & Support */}

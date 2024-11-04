@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { IoBookmarkOutline, IoBookmark } from "react-icons/io5";
 import { FiPlus, FiMenu, FiMoreVertical } from 'react-icons/fi';
 import { FaThumbsUp, FaComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -57,6 +58,7 @@ const SocPage = () => {
   });
   const [posts, setPosts] = useState([]); // State to hold fetched posts
   const [menuOpen, setMenuOpen] = useState(null); // State to track which post's menu is open
+  const [savedPosts, setSavedPosts] = useState([]); // Track saved posts
   const menuRef = useRef(null); // Ref to track the meatball menu
 
   // Fetch society data on component mount
@@ -101,11 +103,30 @@ const SocPage = () => {
       } catch (error) {
         console.error("Error fetching posts and images: ", error);
       }
-    };    
+    }; 
+    
+    const fetchSavedPosts = async () => {
+      const savedCollectionRef = collection(db, `societies/${societyId}/saved_posts`);
+      const querySnapshot = await getDocs(savedCollectionRef);
+      const savedPostsData = querySnapshot.docs.map((doc) => doc.id);
+      setSavedPosts(savedPostsData);
+    };
 
     fetchSocietyData();
     fetchPosts();
+    fetchSavedPosts();
   }, [societyId]);
+
+  const toggleSavePost = async (postId, post) => {
+    const savedRef = doc(db, `societies/${societyId}/saved_posts`, postId);
+    if (savedPosts.includes(postId)) {
+        await deleteDoc(savedRef);
+        setSavedPosts(savedPosts.filter((id) => id !== postId));
+    } else {
+        await setDoc(savedRef, { ...post, username: societyData.username });
+        setSavedPosts([...savedPosts, postId]);
+    }
+  };
 
   const handleArchivePost = async (postId, post) => {
     try {
@@ -304,14 +325,29 @@ const SocPage = () => {
             </div>
             
             {/* Likes and Comments Section */}
-            <div className="w-3/4 flex items-center justify-around bg-[#DEE2E6] p-2 m-2 rounded-lg">
-              <div className="flex items-center space-x-1">
-                <FaThumbsUp className="text-blue-500" />
-                <span className="text-sm">{post.likes} Likes &emsp;</span>
+            <div className="flex items-center justify-between p-2 m-2">
+              {/* Likes and Comments Section */}
+              <div className="flex items-center bg-[#DEE2E6] p-2 rounded-lg w-3/4 space-x-8">
+                <div className="flex items-center space-x-1">
+                  <FaThumbsUp className="text-blue-500" />
+                  <span className="text-sm">{post.likes} Likes</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <FaComment className="text-gray-600" />
+                  <span className="text-sm">{post.comments} Comments</span>
+                </div>
               </div>
-              <div className="flex items-center space-x-1">
-                <FaComment className="text-gray-600" />
-                <span className="text-sm">{post.comments} Comments</span>
+
+              {/* Bookmark Icon - Aligned 1/4th to the right */}
+              <div className="w-1/4 flex justify-end">
+                {/* Bookmark Icon */}
+                <button onClick={() => toggleSavePost(post.id, post)}>
+                  {savedPosts.includes(post.id) ? (
+                    <IoBookmark className="text-gray-600" />
+                  ) : (
+                    <IoBookmarkOutline className="text-gray-500" />
+                  )}
+                </button>
               </div>
             </div>
           </div>
