@@ -71,6 +71,11 @@ const LoginPage = () => {
             Register
           </a>
         </p>
+        <p className="text-center mt-4">
+          <a href="/registerSoc" className="text-black font-bold">
+            Register a Society
+          </a>
+        </p>
       </div>
     </div>
   );

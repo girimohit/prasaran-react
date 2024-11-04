@@ -8,6 +8,8 @@ import EditProfileScreen from "./pages/edit_profile";
 import Home from "./pages/Home";
 import BottomNavBar from "./components/bottom_nav";
 import ProtectedRoute from "./components/ProtectedRoute"; // Import the ProtectedRoute
+import SocRegister from "./pages/SocRegister";
+import VerifyOtp from "./pages/VerifyOtp";
 
 const AllRoutes = () => {
   const location = useLocation();
@@ -25,6 +27,8 @@ const AllRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/registerSoc" element={<SocRegister />} />
+        <Route path="/verify-otp" element={<SocRegister />} />
         <Route
           path="/account-settings"
           element={
