@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { IoBookmarkOutline, IoBookmark } from "react-icons/io5";
+import { IoBookmarkOutline, IoBookmark, IoArchive, IoTrash } from "react-icons/io5";
 import { FiPlus, FiMenu, FiMoreVertical } from 'react-icons/fi';
 import { FaThumbsUp, FaComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -294,14 +294,16 @@ const SocPage = () => {
                 <div ref={menuRef} className="absolute right-6 bg-white shadow-lg rounded-lg z-50">
                   <button
                     onClick={() => handleArchivePost(post.id, post)}
-                    className="p-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                    className="flex items-center p-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                   >
+                    <IoArchive className="mr-2" /> {/* Archive Icon */}
                     Archive
                   </button>
                   <button
                     onClick={() => handleDeletePost(post.id, post.images)} // Ensure the correct post ID and images are passed
-                    className="p-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                    className="flex items-center p-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                   >
+                    <IoTrash className="mr-2" /> {/* Trash Icon */}
                     Delete
                   </button>
                 </div>

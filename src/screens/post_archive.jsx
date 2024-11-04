@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { db } from '../firebaseConfig';
+import { IoTrash, IoReturnUpBack } from "react-icons/io5";
+import { db, storage } from '../firebaseConfig';
 import { FiMoreVertical } from 'react-icons/fi';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { doc, setDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
+import { deleteObject, listAll, ref } from 'firebase/storage';
 
 const ArchivePage = () => {
   const navigate = useNavigate();
@@ -80,6 +82,16 @@ const ArchivePage = () => {
       // Delete post from Firestore archive collection
       await deleteDoc(doc(db, `societies/${societyData.username}/archive`, postId));
 
+      // Step 2: Delete the folder from Firebase Storage
+      const storageFolderRef = ref(storage, `societies/${societyData.username}/${postId}/images`);
+      
+      // List all files in the folder
+      const folderContents = await listAll(storageFolderRef);
+
+      // Delete each file in the folder
+      const deletePromises = folderContents.items.map((fileRef) => deleteObject(fileRef));
+      await Promise.all(deletePromises);
+
       // Update state to reflect deletion
       setArchivedPosts((prevPosts) => prevPosts.filter((p) => p.id !== postId));
     } catch (error) {
@@ -125,14 +137,16 @@ const ArchivePage = () => {
               <div ref={menuRef} className="absolute right-6 bg-white shadow-lg rounded-lg z-50">
                 <button
                   onClick={() => handleRestorePost(post.id, post)}
-                  className="p-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  className="flex items-center p-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                 >
+                  <IoReturnUpBack className="mr-2" /> {/* Archive Icon */}
                   Restore
                 </button>
                 <button
-                  onClick={() => handleDeleteArchivedPost(post.id)}
-                  className="p-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  onClick={() => handleDeleteArchivedPost(post.id, post.images)}
+                  className="flex items-center p-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                 >
+                  <IoTrash className="mr-2" /> {/* Trash Icon */}
                   Delete
                 </button>
               </div>
