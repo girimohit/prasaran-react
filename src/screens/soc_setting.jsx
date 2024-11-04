@@ -19,42 +19,43 @@ const SocSetting = () => {
     };
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 min-h-screen p-4">
+    <div className="min-h-screen bg-[#DEE2E6] flex flex-col items-center">
       {/* Header */}
-      <div className="w-full relative flex items-center justify-center text-gray-700 mb-6">
-        <button onClick={() => navigate('/soc_page')} className="absolute left-0 p-2">
-          <IoMdArrowRoundBack size={24} />
-        </button>
-        <h1 className="text-lg font-semibold">Profile</h1>
-      </div>
+      <IoMdArrowRoundBack  
+        onClick={() => navigate('/soc_page')} // Change to the correct route if needed
+        className="text-2xl cursor-pointer absolute top-2 left-2 text-gray-700 hover:text-black" // Positioning styles
+      />
+      <h1 className="text-2xl font-semibold mt-1">Profile</h1>
       
       {/* Profile Information */}
-      <div className="flex flex-col items-center mb-6">
-        <img
-          src={societyData.profileImageUrl || 'https://via.placeholder.com/150'}
-          alt="Profile"
-          className="w-24 h-24 rounded-full object-cover mb-2"
-        />
-        <h2 className="text-xl font-semibold">{societyData.username || 'Google Developer Group Dyal Singh College'}</h2>
-        <p className="text-gray-500">@{societyData.username}</p>
+      <div className="mt-7 w-full max-w-md flex flex-col items-center">
+        <div className="relative">
+          <img
+            src={societyData.profileImageUrl || 'https://via.placeholder.com/150'}
+            alt="Profile"
+            className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover"
+          />
+        </div>
+        {/* <h2 className="text-xl sm:text-2xl font-semibold mt-4">{societyData.username || 'Google Developer Group Dyal Singh College'}</h2> */}
+        <p className="text-xl sm:text-2xl font-semibold text-gray-500 mt-4">@{societyData.username}</p>
         <button 
           onClick={handleEditProfile}
-          className="bg-black text-white rounded-full py-2 px-4 mt-4"
+          className="bg-black text-white rounded-full py-2 px-4 my-4"
         >
           Edit Profile
         </button>
       </div>
 
       {/* Options */}
-      <div className="w-full max-w-sm ">
+      <div className="w-full max-w-sm">
         {/* Settings */}
-        <div className="flex items-center py-2 border-t border-gray-600">
+        <div className="flex items-center py-2 px-4 border-t border-gray-600">
             <IoSettingsOutline size={20} className="text-gray-500" />
             <p className="text-gray-700 font-medium">&ensp; Settings</p>
         </div>
 
         {/* My Activity */}
-        <div className="flex items-center py-2">
+        <div className="flex items-center py-2 px-4">
             <IoTimeOutline size={20} className="text-gray-500" />
             <button 
             onClick={handleArchivePost}
@@ -65,25 +66,25 @@ const SocSetting = () => {
         </div>
 
         {/* Change Passcode */}
-        <div className="flex items-center py-2">
+        <div className="flex items-center py-2 px-4">
             <IoLockClosedOutline size={20} className="text-gray-500" />
             <p className="text-gray-700 font-medium">&ensp; Change Passcode</p>
         </div>
 
         {/* Saved Posts */}
-        <div className="flex items-center py-2 border-b border-gray-600">
+        <div className="flex items-center py-2 px-4 border-b border-gray-600">
             <IoBookmarkOutline size={20} className="text-gray-500" />
             <p className="text-gray-700 font-medium">&ensp; Saved Posts</p>
         </div>
 
         {/* Help & Support */}
-        <div className="flex items-center py-2">
+        <div className="flex items-center py-2 px-4">
             <IoHelpCircleOutline size={20} className="text-gray-500" />
             <p className="text-gray-700 font-medium">&ensp; Help & Support</p>
         </div>
 
         {/* Log Out */}
-        <div className="flex items-center py-2">
+        <div className="flex items-center py-2 px-4">
             <IoLogOutOutline size={20} className="text-gray-500" />
             <p className="text-gray-700 font-medium">&ensp; Log out</p>
         </div>

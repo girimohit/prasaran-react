@@ -5,7 +5,7 @@ import { FaThumbsUp, FaComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { db, storage } from '../firebaseConfig';
 import { doc, setDoc, getDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
-import { deleteObject, ref } from 'firebase/storage';
+import { deleteObject, listAll, ref } from 'firebase/storage';
 
 // User Images array for Friends/Society Cards
 const userImages = [
@@ -121,25 +121,25 @@ const SocPage = () => {
     }
   };
 
-  const handleDeletePost = async (postId, images) => {
+  const handleDeletePost = async (postId) => {
     try {
-      // Loop through each image URL and delete it from Firebase Storage
-      const deleteImagePromises = images.map(async (imageURL) => {
-        // Extract file name from image URL (assuming it is at the end of the URL)
-        const fileName = imageURL.split('/').pop().split('?')[0];
-        const storageRef = ref(storage, `societies/${societyData.username}/${postId}/images/${fileName}`);
-        
-        await deleteObject(storageRef); // Delete each image
-      });
-
-      // Wait until all images are deleted
-      await Promise.all(deleteImagePromises);
-
-      // Delete post document from Firestore
-      await deleteDoc(doc(db, `societies/${societyId}/post`, postId));
-
-      // Remove post from local state after deletion
+      // Step 1: Delete the document from Firestore
+      await deleteDoc(doc(db, `societies/${societyData.username}/post`, postId));
+      
+      // Step 2: Delete the folder from Firebase Storage
+      const storageFolderRef = ref(storage, `societies/${societyData.username}/${postId}/images`);
+  
+      // List all files in the folder
+      const folderContents = await listAll(storageFolderRef);
+      
+      // Delete each file in the folder
+      const deletePromises = folderContents.items.map((fileRef) => deleteObject(fileRef));
+      await Promise.all(deletePromises);
+  
+      // Update the local state to remove the post
       setPosts((prevPosts) => prevPosts.filter((p) => p.id !== postId));
+  
+      console.log(`Successfully deleted post ID: ${postId} and all associated images.`);
     } catch (error) {
       console.error("Error deleting post or images: ", error);
     }
@@ -278,7 +278,7 @@ const SocPage = () => {
                     Archive
                   </button>
                   <button
-                    onClick={() => handleDeletePost(post.id, post.images)}
+                    onClick={() => handleDeletePost(post.id, post.images)} // Ensure the correct post ID and images are passed
                     className="p-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                   >
                     Delete
