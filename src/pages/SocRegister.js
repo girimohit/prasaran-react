@@ -31,13 +31,16 @@ const SocRegister = () => {
       });
 
       const data = await response.json();
+      console.log("Response from server:", data); // Log the response
+      
       if (!data.success) {
         throw new Error(data.error); // Handle any errors returned from the server
       }
+      navigate('/verify-otp', { state: { societyName, societyDescription, teacherEmail, password, societyLogo } });
 
       console.log("OTP sent successfully, navigating to verify-otp");
       // Redirect to OTP verification page with form data as state
-      navigate('/verify-otp', { state: { societyName, societyDescription, teacherEmail, password, societyLogo } });
+      
     } catch (err) {
       setError(err.message);
     }

@@ -57,10 +57,10 @@ app.post("/send-otp", async (req, res) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: "OTP sent successfully" });
+    res.status(200).json({ success:true, message: "OTP sent successfully" });
   } catch (error) {
     console.error("Error sending OTP email:", error);
-    res.status(500).json({ error: "Failed to send OTP" });
+    res.status(500).json({ success:false, error: "Failed to send OTP" });
   }
 });
 
@@ -76,12 +76,12 @@ app.post("/verify-otp", async (req, res) => {
 
   // Check if OTP exists and is not expired
   if (!storedData || storedData.otp !== otp || Date.now() > storedData.expirationTime) {
-    return res.status(400).json({ error: "Invalid or expired OTP" });
+    return res.status(400).json({ success: false, error: "Invalid or expired OTP" });
   }
 
   // OTP is valid, delete from Firestore
   await admin.firestore().collection('otps').doc(email).delete();
-  res.status(200).json({ message: "OTP verified successfully" });
+  res.status(200).json({success: true, message: "OTP verified successfully" });
 });
 
 

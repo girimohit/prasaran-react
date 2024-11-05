@@ -30,6 +30,7 @@ const VerifyOtp = () => {
       });
 
       const result = await response.json();
+      console.log(result);
       if (!result.success) {
         throw new Error(result.error || 'Invalid OTP');
       }
@@ -55,7 +56,8 @@ const VerifyOtp = () => {
       });
 
       // Redirect to the home page after successful registration
-      navigate('/home');
+      // TODO : NEED TO MAKE /HOME PAGE
+      navigate('/home'); 
     } catch (err) {
       setError(err.message);
     }
@@ -64,6 +66,13 @@ const VerifyOtp = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-white">
       <div className="w-11/12 max-w-md p-6 bg-gray-300 rounded-lg relative">
+      <div className="absolute -top-28 left-1/2 transform -translate-x-1/2 bg-gray-300 rounded-xl">
+          <img
+            src="https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/loginHeadimg.png?alt=media&token=d38ed5d6-d24a-4597-bedd-35170bc3be43"
+            alt="Logo"
+            className="w-40 h-40 object-contain"
+          />
+        </div>
         <form onSubmit={handleVerify} className="mt-10 space-y-4">
           {error && <p className="text-red-500">{error}</p>}
           <div>
