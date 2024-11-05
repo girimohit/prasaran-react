@@ -28,7 +28,7 @@ const AllRoutes = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/registerSoc" element={<SocRegister />} />
-        <Route path="/verify-otp" element={<SocRegister />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route
           path="/account-settings"
           element={

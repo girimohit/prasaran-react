@@ -1,12 +1,8 @@
 // src/SocRegister.js
 import React, { useState } from 'react';
-import { auth, db } from '../firebaseConfig';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import { getFunctions, httpsCallable } from 'firebase/functions';
+
 const SocRegister = () => {
-    
   const [societyName, setSocietyName] = useState('');
   const [societyDescription, setSocietyDescription] = useState('');
   const [teacherEmail, setTeacherEmail] = useState('');
@@ -16,43 +12,41 @@ const SocRegister = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // INITIALIZE THE FIREBASE FUNCS
-    const functions = getFunctions();
-    const sendOtpToEmail = httpsCallable(functions, 'sendOtpToEmail');
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
-    const handleRegister = async (e) => {
-        e.preventDefault();
-      
-        if (password !== confirmPassword) {
-          setError('Passwords do not match');
-          return;
-        }
-      
-        try {
-          const response = await fetch('https://us-central1-prasaran-init.cloudfunctions.net/sendOtpToEmail', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: teacherEmail }), // Send the email in the request body
-          });
-      
-          const data = await response.json();
-          if (!data.success) {
-            throw new Error(data.error); // Handle any errors returned from the function
-          }
-      
-          // Redirect to OTP verification page with form data as state
-          navigate('/verify-otp', { state: { societyName, societyDescription, teacherEmail, password, societyLogo } });
-        } catch (err) {
-          setError(err.message);
-        }
-      };
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    try {
+      // Send OTP to the teacher's email via your Node.js server
+      const response = await fetch('http://localhost:5500/send-otp', { // Adjust the URL if needed
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: teacherEmail }), // Send the email in the request body
+      });
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.error); // Handle any errors returned from the server
+      }
+
+      console.log("OTP sent successfully, navigating to verify-otp");
+      // Redirect to OTP verification page with form data as state
+      navigate('/verify-otp', { state: { societyName, societyDescription, teacherEmail, password, societyLogo } });
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center h-screen bg-white">
       <div className="w-11/12 max-w-md p-6 bg-gray-300 rounded-lg relative">
-      <div className="absolute -top-28 left-1/2 transform -translate-x-1/2 bg-gray-300 rounded-xl">
+        <div className="absolute -top-28 left-1/2 transform -translate-x-1/2 bg-gray-300 rounded-xl">
           <img
             src="https://firebasestorage.googleapis.com/v0/b/prasaran-init.appspot.com/o/loginHeadimg.png?alt=media&token=d38ed5d6-d24a-4597-bedd-35170bc3be43"
             alt="Logo"
