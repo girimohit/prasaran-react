@@ -11,7 +11,7 @@ const VerifyOtp = () => {
   const navigate = useNavigate();
 
   // Retrieve the state passed from SocRegister
-  const { societyName, societyDescription, teacherEmail, password, societyLogo } = location.state || {};
+  const { societyName, socEmail, societyDescription, teacherEmail, password, societyLogo } = location.state || {};
 
   const [otp, setOtp] = useState('');
   const [error, setError] = useState(null);
@@ -36,7 +36,7 @@ const VerifyOtp = () => {
       }
 
       // If OTP is valid, create the user in Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(auth, teacherEmail, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, socEmail, password);
       
       let logoUrl = null;
       // Handle logo upload if a logo is provided
@@ -52,12 +52,13 @@ const VerifyOtp = () => {
         societyName,
         societyDescription,
         teacherEmail,
+        socEmail,
         logo: logoUrl // Store the logo URL
       });
 
       // Redirect to the home page after successful registration
       // TODO : NEED TO MAKE /HOME PAGE
-      navigate('/home'); 
+      navigate('/SocLogin'); 
     } catch (err) {
       setError(err.message);
     }

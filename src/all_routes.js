@@ -10,7 +10,7 @@ import BottomNavBar from "./components/bottom_nav";
 import ProtectedRoute from "./components/ProtectedRoute"; // Import the ProtectedRoute
 import SocRegister from "./pages/SocRegister";
 import VerifyOtp from "./pages/VerifyOtp";
-
+import SocLogin from "./pages/SocLogin";
 const AllRoutes = () => {
   const location = useLocation();
   const showNavPaths = [
@@ -29,6 +29,7 @@ const AllRoutes = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/registerSoc" element={<SocRegister />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
+        <Route path="/SocLogin" element={<SocLogin />} />
         <Route
           path="/account-settings"
           element={

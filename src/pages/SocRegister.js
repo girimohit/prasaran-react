@@ -6,6 +6,7 @@ const SocRegister = () => {
   const [societyName, setSocietyName] = useState('');
   const [societyDescription, setSocietyDescription] = useState('');
   const [teacherEmail, setTeacherEmail] = useState('');
+  const [socEmail, setsocEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [societyLogo, setSocietyLogo] = useState(null); // for optional logo
@@ -15,6 +16,11 @@ const SocRegister = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    const domain = "@dsc.du.ac.in";
+    if (!teacherEmail.endsWith(domain)) {
+    setError(`TIC Email-id must end with ${domain}`);
+    return;
+    }
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -36,7 +42,7 @@ const SocRegister = () => {
       if (!data.success) {
         throw new Error(data.error); // Handle any errors returned from the server
       }
-      navigate('/verify-otp', { state: { societyName, societyDescription, teacherEmail, password, societyLogo } });
+      navigate('/verify-otp', { state: { societyName, socEmail, societyDescription, teacherEmail, password, societyLogo } });
 
       console.log("OTP sent successfully, navigating to verify-otp");
       // Redirect to OTP verification page with form data as state
@@ -85,6 +91,16 @@ const SocRegister = () => {
               className="w-full p-2 border-b-2 border-gray-500 focus:outline-none bg-transparent"
               value={teacherEmail}
               onChange={(e) => setTeacherEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <input
+              type="email"
+              placeholder="Society's Official Email-ID"
+              className="w-full p-2 border-b-2 border-gray-500 focus:outline-none bg-transparent"
+              value={socEmail}
+              onChange={(e) => setsocEmail(e.target.value)}
               required
             />
           </div>

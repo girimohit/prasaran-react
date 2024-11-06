@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [socEmail, setsocEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const LoginPage = () => {
     e.preventDefault();
     
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, socEmail, password);
       alert('Logged in successfully');
       navigate('/');
       // Redirect the user or perform further actions after login
@@ -38,10 +38,10 @@ const LoginPage = () => {
           <div>
             <input
               type="email"
-              placeholder="Email-Id"
+              placeholder="Society's Email-Id"
               className="w-full p-2 border-b-2 border-gray-500 focus:outline-none bg-transparent"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={socEmail}
+              onChange={(e) => setsocEmail(e.target.value)}
               required
             />
           </div>
@@ -72,8 +72,8 @@ const LoginPage = () => {
           </a>
         </p>
         <p className="text-center underline mt-4">
-          <a href="/SocLogin" className="text-black font-bold">
-            Society Login
+          <a href="/login" className="text-black font-bold">
+            User Login
           </a>
         </p>
         <p className="text-center underline mt-2">
