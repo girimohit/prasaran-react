@@ -29,7 +29,7 @@ const Register = () => {
       const user = userCredential.user;
 
       // Save additional user data to Firestore
-      await setDoc(doc(db, 'users', user.uid), {
+      await setDoc(doc(db, 'users', fullName), {
         fullName: fullName,
         email: email,
         phoneNumber: phoneNumber,

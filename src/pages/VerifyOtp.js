@@ -48,7 +48,7 @@ const VerifyOtp = () => {
       }
 
       // Create a Firestore document for the society
-      await setDoc(doc(db, 'societies', userCredential.user.uid), {
+      await setDoc(doc(db, 'societies', societyName), {
         societyName,
         societyDescription,
         teacherEmail,
