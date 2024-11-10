@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { IoBookmarkOutline, IoBookmark, IoArchive, IoTrash } from "react-icons/io5";
-import { FiPlus, FiMenu, FiMoreVertical } from 'react-icons/fi';
+import { FiMenu, FiMoreVertical } from 'react-icons/fi';
 import { FaThumbsUp, FaComment } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { GoHome } from "react-icons/go";
+import { RiChat3Line } from "react-icons/ri";
+import { MdOutlinePostAdd, MdAccountCircle, MdOutlineSearch } from "react-icons/md";
+import { NavLink, useNavigate } from 'react-router-dom';
 import { db, storage } from '../firebaseConfig';
 import { doc, setDoc, getDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
 import { deleteObject, listAll, ref } from 'firebase/storage';
@@ -358,15 +361,74 @@ const SocPage = () => {
 
 
       {/* Create Post Button */}
-      <div className="fixed bottom-10 right-10">
+      {/* <div className="fixed bottom-10 right-10">
         <button
           onClick={handleCreate_PostButtonClick}  // Add the click handler
           className="bg-[#DEE2E6] hover:bg-gray-300 text-gray-700 p-6 rounded-full shadow-lg"
         >
           <FiPlus className="text-2xl" />
         </button>
-      </div>
+      </div> */}
+
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg">
+        <ul className="flex justify-around items-center py-4 bg-white rounded-t-2xl">
+          <li>
+            <NavLink
+              exact
+              to="/"
+              activeClassName="text-blue-500"
+              className="flex flex-col items-center text-gray-500 hover:text-blue-500"
+            >
+              <GoHome size={24} />
+              {/* <span className="text-xs">Explore</span> */}
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/search_screen"
+              activeClassName="text-blue-500"
+              className="flex flex-col items-center text-gray-500 hover:text-blue-500"
+            >
+              <MdOutlineSearch size={24} />
+              {/* <span className="text-xs">Chat</span> */}
+            </NavLink>
+          </li>
+          <li>
+          <button
+            onClick={handleCreate_PostButtonClick} // Use onClick to trigger navigation
+            className="flex flex-col items-center text-gray-500 hover:text-blue-500"
+          >
+            <MdOutlinePostAdd size={24} />
+            {/* <span className="text-xs">Post</span> */}
+          </button>
+          </li>
+          <li>
+            <NavLink
+              to="/chat_screen"
+              activeClassName="text-blue-500"
+              className="flex flex-col items-center text-gray-500 hover:text-blue-500"
+            >
+              <RiChat3Line size={24} />
+              {/* <span className="text-xs">Post</span> */}
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/soc_page"
+              activeClassName="text-blue-500"
+              className="flex flex-col items-center text-gray-500 hover:text-blue-500"
+            >
+              <MdAccountCircle size={24}/>
+              {/* <span className="text-xs">Updates</span> */}
+            </NavLink>
+          </li>
+        </ul>
+      </nav>
     </div>
+
+    
+
+    
   );
 };
 
