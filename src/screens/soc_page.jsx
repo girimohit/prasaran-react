@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { db, storage } from '../firebaseConfig';
 import { doc, setDoc, getDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
 import { deleteObject, listAll, ref } from 'firebase/storage';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // User Images array for Friends/Society Cards
 const userImages = [
@@ -122,11 +124,13 @@ const SocPage = () => {
     if (savedPosts.includes(postId)) {
         await deleteDoc(savedRef);
         setSavedPosts(savedPosts.filter((id) => id !== postId));
+        toast.info("Post unsaved");
     } else {
         await setDoc(savedRef, { ...post, username: societyData.username });
         setSavedPosts([...savedPosts, postId]);
+        toast.success("Post saved successfully");
     }
-  };
+  };  
 
   const handleArchivePost = async (postId, post) => {
     try {
@@ -137,6 +141,7 @@ const SocPage = () => {
       await deleteDoc(doc(db, `societies/${societyId}/post`, postId));
       // Update local state
       setPosts((prevPosts) => prevPosts.filter((p) => p.id !== postId));
+      toast("Post moved to archive")
     } catch (error) {
       console.error("Error archiving post: ", error);
     }
@@ -159,10 +164,11 @@ const SocPage = () => {
   
       // Update the local state to remove the post
       setPosts((prevPosts) => prevPosts.filter((p) => p.id !== postId));
-  
+      toast.warning("Post Deleted Successfully.")
       console.log(`Successfully deleted post ID: ${postId} and all associated images.`);
     } catch (error) {
       console.error("Error deleting post or images: ", error);
+      toast.error("Error deleting post")
     }
   };
 
@@ -199,6 +205,8 @@ const SocPage = () => {
 
   return (
     <div className="min-h-screen bg-[#DEE2E6] flex flex-col items-center">
+      {/* Toast Container */}
+      <ToastContainer position="top-right" hideProgressBar={true} closeButton={false} autoClose={3000} />
       {/* Back Button */}
       <IoMdArrowRoundBack  
         onClick={() => navigate('/')} // Change to the correct route if needed

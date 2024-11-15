@@ -145,7 +145,7 @@ const HomeScreen = () => {
         });
       }
 
-      toast("Post reported successfully."); // Display success notification
+      toast.warning("Post reported successfully."); // Display success notification
     } catch (error) {
       console.error('Error reporting post:', error);
       toast.error("Failed to report the post. Please try again."); // Display error notification

@@ -6,6 +6,8 @@ import { FiMoreVertical } from 'react-icons/fi';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { doc, setDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
 import { deleteObject, listAll, ref } from 'firebase/storage';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ArchivePage = () => {
   const navigate = useNavigate();
@@ -72,8 +74,10 @@ const ArchivePage = () => {
 
       // Update state to reflect changes
       setArchivedPosts((prevPosts) => prevPosts.filter((p) => p.id !== postId));
+      toast.success("Restored archived post")
     } catch (error) {
       console.error("Error restoring post: ", error);
+      toast.error("Error restoring archived post")
     }
   };
 
@@ -94,13 +98,17 @@ const ArchivePage = () => {
 
       // Update state to reflect deletion
       setArchivedPosts((prevPosts) => prevPosts.filter((p) => p.id !== postId));
+      toast.warning("Archived Post Deleted")
     } catch (error) {
       console.error("Error deleting archived post: ", error);
+      toast.error("Error deleting archived post")
     }
   };
 
   return (
     <div className="min-h-screen bg-[#DEE2E6] flex flex-col items-center">
+      {/* Toast Container */}
+      <ToastContainer position="top-right" hideProgressBar={true} closeButton={false} autoClose={3000} />
       {/* Back Button */}
       <IoMdArrowRoundBack
         onClick={() => navigate('/soc_setting', { state: { societyData } })}

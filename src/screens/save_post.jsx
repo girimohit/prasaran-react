@@ -6,6 +6,8 @@ import { FaThumbsUp, FaComment } from "react-icons/fa";
 import { db } from '../firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SavePostPage = () => {
   const navigate = useNavigate();
@@ -40,6 +42,7 @@ const SavePostPage = () => {
     try {
       await deleteDoc(doc(db, `societies/${societyData.username}/saved_posts`, postId));
       setSavedPosts(savedPosts.filter((post) => post.id !== postId));
+      toast.info("Post unsaved");
     } catch (error) {
       console.error("Error unsaving post: ", error);
     }
@@ -47,6 +50,8 @@ const SavePostPage = () => {
 
   return (
     <div className="min-h-screen bg-[#DEE2E6] flex flex-col items-center">
+      {/* Toast Container */}
+      <ToastContainer position="top-right" hideProgressBar={true} closeButton={false} autoClose={3000} />
       <IoMdArrowRoundBack 
       onClick={() => navigate(-1)} 
       className="text-2xl cursor-pointer absolute top-2 left-2 text-gray-700 hover:text-black" 
