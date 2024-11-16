@@ -56,7 +56,21 @@ const HomeScreen = () => {
   const [posts, setPosts] = useState([]); // State to hold fetched posts
   const [menuOpen, setMenuOpen] = useState(null); // State to track which post's menu is open
   const [savedPosts, setSavedPosts] = useState([]); // Track saved posts
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [selectedReportOptions, setSelectedReportOptions] = useState([]);
+  const [currentPostToReport, setCurrentPostToReport] = useState(null);
   const menuRef = useRef(null); // Ref to track the meatball menu
+
+  const reportOptions = [
+    "I just don't like it",
+    "Bullying or unwanted contact",
+    "Suicide, self-injury or eating disorders",
+    "Violence, hate or exploitation",
+    "Selling or promoting restricted items",
+    "Nudity or sexual activity",
+    "Scam, fraud or spam",
+    "False information",
+  ];
 
   // Fetch society data on component mount
   useEffect(() => {
@@ -125,31 +139,51 @@ const HomeScreen = () => {
     }
   };
 
-  const handleReportPost = async (postId, post) => {
-    const reportRef = doc(db, `report/soc_post/${societyId}`, postId);
+  const handleReportPost = (postId) => {
+    setCurrentPostToReport(postId);
+    setReportModalOpen(true);
+  };
+
+  const submitReport = async () => {
+    if (!selectedReportOptions.length) {
+      toast.error("Please select at least one option.");
+      return;
+    }
 
     try {
+      const reportRef = doc(db, `report/soc_post/${societyId}`, currentPostToReport);
       const reportDoc = await getDoc(reportRef);
 
       if (reportDoc.exists()) {
         const currentData = reportDoc.data();
         await setDoc(reportRef, {
           ...currentData,
-          reportCount: (currentData.reportCount || 0) + 1,
+          reportOptions: [...currentData.reportOptions, ...selectedReportOptions],
+          reportCount: (currentData.reportCount || 0) + 1, // Increment count
         });
       } else {
         await setDoc(reportRef, {
-          ...post,
-          reportCount: 1,
+          reportOptions: selectedReportOptions,
+          reportCount: 1, // Initialize count
           reportedAt: new Date().toISOString(),
         });
       }
 
-      toast.warning("Post reported successfully."); // Display success notification
+      toast.warning("Report submitted successfully.");
+      setReportModalOpen(false);
+      setSelectedReportOptions([]);
     } catch (error) {
-      console.error('Error reporting post:', error);
-      toast.error("Failed to report the post. Please try again."); // Display error notification
+      console.error('Error submitting report:', error);
+      toast.error("Failed to submit the report. Please try again.");
     }
+  };
+
+  const handleReportOptionToggle = (option) => {
+    setSelectedReportOptions((prev) =>
+      prev.includes(option)
+        ? prev.filter((item) => item !== option)
+        : [...prev, option]
+    );
   };
   
   // Handle click outside the menu to close it
@@ -283,6 +317,44 @@ const HomeScreen = () => {
             </div>
           ))}
         </div>
+
+        {/* Report Modal */}
+        {reportModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white rounded-lg shadow-lg w-96 p-6">
+              <h3 className="text-xl font-bold mb-2">Report</h3>
+              <h4 className="text-lg mb-4">Why are you reporting this post?</h4>
+              <p className="text-sm text-gray-500 mb-4">Your report is anonymous.</p>
+              <div className="space-y-2">
+                {reportOptions.map((option) => (
+                  <label key={option} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedReportOptions.includes(option)}
+                      onChange={() => handleReportOptionToggle(option)}
+                      className="form-checkbox"
+                    />
+                    <span className="text-sm">{option}</span>
+                  </label>
+                ))}
+              </div>
+              <div className="flex justify-end mt-4">
+                <button
+                  className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mr-2"
+                  onClick={() => setReportModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg"
+                  onClick={submitReport}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       
     )
