@@ -1,5 +1,5 @@
 import React from 'react';
-import {IoSettingsOutline, IoTimeOutline, IoLockClosedOutline, IoBookmarkOutline, IoHelpCircleOutline, IoLogOutOutline } from 'react-icons/io5';
+import { IoTimeOutline, IoLockClosedOutline, IoBookmarkOutline, IoHelpCircleOutline, IoLogOutOutline, IoHeartOutline, IoChatbubbleOutline, IoShieldOutline, IoWarningOutline, IoBanOutline } from 'react-icons/io5';
 import { IoMdArrowRoundBack } from "react-icons/io"
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -24,6 +24,11 @@ const SocSetting = () => {
               societyData 
           }
       });
+    };
+
+    // Inside the Privacy Policy function
+    const handlePrivacyPolicy = () => {
+      navigate('/privacy_policy');
     };
 
   return (
@@ -56,13 +61,30 @@ const SocSetting = () => {
 
       {/* Options */}
       <div className="w-full max-w-sm">
-        {/* Settings */}
+        {/* Likes */}
         <div className="flex items-center py-2 px-4 border-t border-gray-600">
-            <IoSettingsOutline size={20} className="text-gray-500" />
-            <p className="text-gray-700 font-medium">&ensp; Settings</p>
+            <IoHeartOutline size={20} className="text-gray-500" />
+            <p className="text-gray-700 font-medium">&ensp; Likes</p>
         </div>
 
-        {/* My Activity */}
+        {/* Saved Posts */}
+        <div className="flex items-center py-2 px-4">
+            <IoBookmarkOutline size={20} className="text-gray-500" />
+            <button 
+            onClick={handleSavePost}
+            className="text-gray-700 font-medium"
+            >
+              &ensp; Saved Posts
+            </button>
+        </div>
+
+        {/* Comments */}
+        <div className="flex items-center py-2 px-4">
+            <IoChatbubbleOutline size={20} className="text-gray-500" />
+            <p className="text-gray-700 font-medium">&ensp; Comments</p>
+        </div>
+
+        {/* Archive */}
         <div className="flex items-center py-2 px-4">
             <IoTimeOutline size={20} className="text-gray-500" />
             <button 
@@ -73,27 +95,39 @@ const SocSetting = () => {
             </button>
         </div>
 
-        {/* Change Passcode */}
+        {/* Blocked */}
         <div className="flex items-center py-2 px-4">
+            <IoBanOutline size={20} className="text-gray-500" />
+            <p className="text-gray-700 font-medium">&ensp; Blocked</p>
+        </div>
+        
+        {/* Change Passcode */}
+        <div className="flex items-center py-2 px-4 border-b border-gray-600">
             <IoLockClosedOutline size={20} className="text-gray-500" />
             <p className="text-gray-700 font-medium">&ensp; Change Passcode</p>
-        </div>
-
-        {/* Saved Posts */}
-        <div className="flex items-center py-2 px-4 border-b border-gray-600">
-            <IoBookmarkOutline size={20} className="text-gray-500" />
-            <button 
-            onClick={handleSavePost}
-            className="text-gray-700 font-medium"
-            >
-              &ensp; Saved Posts
-            </button>
         </div>
 
         {/* Help & Support */}
         <div className="flex items-center py-2 px-4">
             <IoHelpCircleOutline size={20} className="text-gray-500" />
             <p className="text-gray-700 font-medium">&ensp; Help & Support</p>
+        </div>
+
+        {/* Privacy Policy */}
+        <div className="flex items-center py-2 px-4">
+            <IoShieldOutline size={20} className="text-gray-500" />
+            <button 
+            onClick={handlePrivacyPolicy}
+            className="text-gray-700 font-medium"
+            >
+              &ensp; Privacy Policy
+            </button>
+        </div>
+
+        {/* Report Problem */}
+        <div className="flex items-center py-2 px-4">
+            <IoWarningOutline size={20} className="text-gray-500" />
+            <p className="text-gray-700 font-medium">&ensp; Report Problem</p>
         </div>
 
         {/* Log Out */}
