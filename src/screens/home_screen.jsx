@@ -237,7 +237,6 @@ const HomeScreen = () => {
                   <h2 className="text-sm font-semibold">
                     {societyData.username || "Society Name"}
                   </h2>
-                  {/* <p className="text-xs text-gray-500">{post.content}</p> */}
                 </div>
                 {/* Meatball Menu Button */}
                 <button
@@ -253,10 +252,10 @@ const HomeScreen = () => {
                   <div ref={menuRef} className="absolute right-6 bg-white shadow-lg rounded-lg z-50">
                     <button
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevent click event propagation
+                        e.stopPropagation();
                         handleReportPost(post.id, post);
                       }}
-                      className="flex items-center p-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                      className="flex items-center p-2 text-sm text-red-700 hover:bg-red-300 w-full text-left"
                     >
                       <IoWarning className="mr-2" /> {/* Report Icon */}
                       Report
@@ -290,7 +289,6 @@ const HomeScreen = () => {
               
               {/* Likes and Comments Section */}
               <div className="flex items-center justify-between p-2 m-2">
-                {/* Likes and Comments Section */}
                 <div className="flex items-center bg-[#DEE2E6] p-2 rounded-lg w-3/4 space-x-8">
                   <div className="flex items-center space-x-1">
                     <FaThumbsUp className="text-blue-500" />
@@ -302,9 +300,8 @@ const HomeScreen = () => {
                   </div>
                 </div>
 
-                {/* Bookmark Icon - Aligned 1/4th to the right */}
+                {/* Bookmark Icon */}
                 <div className="w-1/4 flex justify-end">
-                  {/* Bookmark Icon */}
                   <button onClick={() => toggleSavePost(post.id, post)}>
                     {savedPosts.includes(post.id) ? (
                       <IoBookmark className="text-gray-600" />
@@ -321,10 +318,10 @@ const HomeScreen = () => {
         {/* Report Modal */}
         {reportModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white rounded-lg shadow-lg w-96 p-6">
-              <h3 className="text-xl font-bold mb-2">Report</h3>
-              <h4 className="text-lg mb-4">Why are you reporting this post?</h4>
-              <p className="text-sm text-gray-500 mb-4">Your report is anonymous.</p>
+            <div className="bg-[#DEE2E6] rounded-lg shadow-lg w-96 p-6">
+              <h3 className="text-center text-xl font-bold mb-2">Report</h3>
+              <h4 className="text-center text-lg mb-0">Why are you reporting this post?</h4>
+              <p className="text-center text-sm text-gray-500 mb-4">Your report is anonymous.</p>
               <div className="space-y-2">
                 {reportOptions.map((option) => (
                   <label key={option} className="flex items-center space-x-2">
