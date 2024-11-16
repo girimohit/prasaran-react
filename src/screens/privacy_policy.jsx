@@ -6,7 +6,7 @@ const PrivacyPolicy = () => {
     const navigate = useNavigate();
     
   return (
-    <div className="pt-0 p-6 min-h-screen font-sans bg-[#DEE2E6] text-gray-800 flex flex-col items-center">
+    <div className="pt-0 min-h-screen font-sans bg-[#DEE2E6] text-gray-800 flex flex-col items-center">
       {/* Heading with Back Icon and Title */}
       <div className="flex items-center mb-6 w-full max-w-2xl">
           <IoMdArrowRoundBack 
@@ -16,7 +16,7 @@ const PrivacyPolicy = () => {
           <h1 className="text-2xl font-semibold text-center text-gray-950 flex-grow">Privacy Policy</h1>
       </div>
 
-      <div className="w-full max-w-2xl">
+      <div className="w-full max-w-2xl px-6 sm:px-0">
         <p className="text-sm text-gray-600 mb-4">
           <strong>Effective Date:</strong> Nov 1, 2024
           <br />

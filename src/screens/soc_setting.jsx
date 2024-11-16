@@ -34,11 +34,13 @@ const SocSetting = () => {
   return (
     <div className="min-h-screen bg-[#DEE2E6] flex flex-col items-center">
       {/* Header */}
-      <IoMdArrowRoundBack  
-        onClick={() => navigate('/soc_page')} // Change to the correct route if needed
-        className="text-2xl cursor-pointer absolute top-2 left-2 text-gray-700 hover:text-black" // Positioning styles
-      />
-      <h1 className="text-2xl font-semibold mt-1">Profile</h1>
+      <div className="flex items-center mb-6 w-full max-w-sm">
+        <IoMdArrowRoundBack  
+          onClick={() => navigate('/soc_page')} // Change to the correct route if needed
+          className="text-2xl cursor-pointer text-gray-700 hover:text-black ml-0" // Positioning styles
+        />
+        <h1 className="text-2xl font-semibold text-center text-gray-950 flex-grow">Profile</h1>
+      </div>
       
       {/* Profile Information */}
       <div className="mt-7 w-full max-w-md flex flex-col items-center">
@@ -49,7 +51,6 @@ const SocSetting = () => {
             className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover"
           />
         </div>
-        {/* <h2 className="text-xl sm:text-2xl font-semibold mt-4">{societyData.username || 'Google Developer Group Dyal Singh College'}</h2> */}
         <p className="text-xl sm:text-2xl font-semibold text-gray-500 mt-4">@{societyData.username}</p>
         <button 
           onClick={handleEditProfile}
