@@ -20,9 +20,7 @@ const SocSetting = () => {
     // Inside the handleSavePost function
     const handleSavePost = () => {
       navigate('/save_post', { 
-          state: { 
-              societyData 
-          }
+          state: {  societyData  }
       });
     };
 
@@ -33,8 +31,8 @@ const SocSetting = () => {
 
     // Inside the Help & Support function
     const handleHelpSupport = () => {
-      navigate('/help_support');
-    };
+      navigate('/help_support', { state: { societyData } }); // Pass the entire societyData
+    };    
 
   return (
     <div className="min-h-screen bg-[#DEE2E6] flex flex-col items-center">
