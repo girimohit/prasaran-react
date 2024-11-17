@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 const HelpSupport = () => {
   const navigate = useNavigate();
 
+  const handleFaqPage = () => {
+    navigate('/Faq_page');
+  };
   return (
     <div className="min-h-screen bg-gray-100 pt-0">
       {/* Header Section */}
@@ -40,6 +43,12 @@ const HelpSupport = () => {
           <p className="text-gray-600">
             Explore answers to common queries about Prasaran’s features and functionality.
           </p>
+          <button 
+            onClick={handleFaqPage}
+            className="text-gray-700 font-medium"
+            >
+              &ensp; FAQ's
+          </button>
         </div>
 
         {/* Chat and Contact Support */}
