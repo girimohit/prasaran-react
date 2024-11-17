@@ -31,6 +31,11 @@ const SocSetting = () => {
       navigate('/privacy_policy');
     };
 
+    // Inside the Help & Support function
+    const handleHelpSupport = () => {
+      navigate('/help_support');
+    };
+
   return (
     <div className="min-h-screen bg-[#DEE2E6] flex flex-col items-center">
       {/* Header */}
@@ -111,7 +116,12 @@ const SocSetting = () => {
         {/* Help & Support */}
         <div className="flex items-center py-2 px-4">
             <IoHelpCircleOutline size={20} className="text-gray-500" />
-            <p className="text-gray-700 font-medium">&ensp; Help & Support</p>
+            <button 
+            onClick={handleHelpSupport}
+            className="text-gray-700 font-medium"
+            >
+              &ensp; Help & Support
+            </button>
         </div>
 
         {/* Privacy Policy */}

@@ -18,6 +18,7 @@ import SocFollowers from "./screens/soc_followers";
 import ArchivePage from "./screens/post_archive";
 import SavePostPage from "./screens/save_post";
 import PrivacyPolicy from "./screens/privacy_policy";
+import HelpSupport from "./screens/help_support";
 
 const AllRoutes = () => {
   const location = useLocation(); // Get the location object
@@ -48,6 +49,7 @@ const AllRoutes = () => {
         <Route path="/post_archive" element={<ArchivePage />} />
         <Route path="/save_post" element={<SavePostPage />} />
         <Route path="/privacy_policy" element={<PrivacyPolicy />} />
+        <Route path="/help_support" element={<HelpSupport />} />
       </Routes>
       {showNavPaths.includes(location.pathname) && <BottomNavBar />}
     </>
