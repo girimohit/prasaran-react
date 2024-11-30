@@ -21,6 +21,16 @@ import PrivacyPolicy from "./screens/privacy_policy";
 import HelpSupport from "./screens/help_support";
 import FaqPage from "./screens/Faq_page";
 
+import LoginPage from "./pages/loginPage";
+import Register from "./pages/Register";
+import AccountSettingScreen from "./pages/account_setting";
+import EditProfileScreen from "./pages/edit_profile";
+import Home from "./pages/Home";
+import ProtectedRoute from "./components/ProtectedRoute"; // Import the ProtectedRoute
+import SocRegister from "./pages/SocRegister";
+import VerifyOtp from "./pages/VerifyOtp";
+import SocLogin from "./pages/SocLogin";
+
 const AllRoutes = () => {
   const location = useLocation(); // Get the location object
   const showNavPaths = [
@@ -29,6 +39,17 @@ const AllRoutes = () => {
     "/add-post",
     "/chat_screen",
     "/soc_page",
+  ];
+// src/AllRoutes.js
+
+const AllRoutes = () => {
+  const location = useLocation();
+  const showNavPaths = [
+    "/",
+    "/search",
+    "/add-post",
+    "/chats",
+    "/account-settings",
   ];
 
   return (
@@ -52,10 +73,32 @@ const AllRoutes = () => {
         <Route path="/privacy_policy" element={<PrivacyPolicy />} />
         <Route path="/help_support" element={<HelpSupport />} />
         <Route path="/Faq_page" element={<FaqPage />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/registerSoc" element={<SocRegister />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
+        <Route path="/SocLogin" element={<SocLogin />} />
+        <Route
+          path="/account-settings"
+          element={
+            <ProtectedRoute>
+              <AccountSettingScreen />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/account-settings/edit-profile"
+          element={
+            <ProtectedRoute>
+              <EditProfileScreen />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       {showNavPaths.includes(location.pathname) && <BottomNavBar />}
     </>
   );
 };
-
+}
 export default AllRoutes;
