@@ -1,3 +1,12 @@
+.Toastify__toast--success {
+    background-color: #F8F8FF !important; /* Toast background */
+    color: black !important; /* Text color */
+  }
+
+  .Toastify__toast {
+    border-radius: 8px !important; /* Rounded corners for the entire toast */
+  }
+  
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
