@@ -31,15 +31,15 @@ import SocRegister from "./pages/SocRegister";
 import VerifyOtp from "./pages/VerifyOtp";
 import SocLogin from "./pages/SocLogin";
 
-const AllRoutes = () => {
-  const location = useLocation(); // Get the location object
-  const showNavPaths = [
-    "/",
-    "/search_screen",
-    "/add-post",
-    "/chat_screen",
-    "/soc_page",
-  ];
+// const AllRoutes = () => {
+//   const location = useLocation(); // Get the location object
+//   const showNavPaths = [
+//     "/",
+//     "/search_screen",
+//     "/add-post",
+//     "/chat_screen",
+//     "/soc_page",
+//   ];
 // src/AllRoutes.js
 
 const AllRoutes = () => {
@@ -58,7 +58,8 @@ const AllRoutes = () => {
         <Route path="/" element={<HomeScreen />} />
         <Route path="/search_screen" element={<SearchScreen />} />
         {/* <Route path="/add-post" element={<AddPostScreen />} /> */}
-        <Route path="/chat_screen" element={<ChatScreen />} />
+        {/* <Route path="/chat_screen" element={<ChatScreen />} /> */}
+        <Route path="/chats" element={<ChatScreen />} />
         {/* <Route path="/account-settings" element={<AccountSettingScreen />} /> */}
         {/* <Route path="/account-settings/edit-profile" element={<EditProfileScreen />}/> */}
         <Route path="/soc_page" element={<SocPage />} />
@@ -73,7 +74,7 @@ const AllRoutes = () => {
         <Route path="/privacy_policy" element={<PrivacyPolicy />} />
         <Route path="/help_support" element={<HelpSupport />} />
         <Route path="/Faq_page" element={<FaqPage />} />
-        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Home />} /> */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/registerSoc" element={<SocRegister />} />
@@ -100,5 +101,79 @@ const AllRoutes = () => {
     </>
   );
 };
-}
+
 export default AllRoutes;
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React from "react";
+// import { Route, Routes, useLocation } from "react-router-dom"; // Ensure you're importing from react-router-dom
+// // import PostList from "./postList"; // Assuming you need these imports somewhere
+// // import AccountSettingScreen from "./screens/account_setting";
+// // import AddPostScreen from "./screens/add_post";
+// import ChatScreen from "./screens/chat_screen";
+// // import EditProfileScreen from "./screens/edit_profile";
+// import HomeScreen from "./screens/home_screen";
+// import SearchScreen from "./screens/search_screen";
+// import SocPage from "./screens/soc_page";
+// import BottomNavBar from "./components/bottom_nav";
+// import CreatePost from "./screens/create_post"; 
+// import EditPost from "./screens/edit_post";
+// import EditSocietyDescription from "./screens/edit_soc_description";
+// import SocSetting from "./screens/soc_setting";
+// import SocMembers from "./screens/soc_members";
+// import SocFollowers from "./screens/soc_followers";
+// import ArchivePage from "./screens/post_archive";
+// import SavePostPage from "./screens/save_post";
+// import PrivacyPolicy from "./screens/privacy_policy";
+// import HelpSupport from "./screens/help_support";
+// import FaqPage from "./screens/Faq_page";
+
+// const AllRoutes = () => {
+//   const location = useLocation(); // Get the location object
+//   const showNavPaths = [
+//     "/",
+//     "/search_screen",
+//     "/add-post",
+//     "/chat_screen",
+//     "/soc_page",
+//   ];
+
+//   return (
+//     <>
+//       <Routes>
+//         <Route path="/" element={<HomeScreen />} />
+//         <Route path="/search_screen" element={<SearchScreen />} />
+//         {/* <Route path="/add-post" element={<AddPostScreen />} /> */}
+//         <Route path="/chat_screen" element={<ChatScreen />} />
+//         {/* <Route path="/account-settings" element={<AccountSettingScreen />} /> */}
+//         {/* <Route path="/account-settings/edit-profile" element={<EditProfileScreen />}/> */}
+//         <Route path="/soc_page" element={<SocPage />} />
+//         <Route path="/create-post" element={<CreatePost />} />
+//         <Route path="/edit-post" element={<EditPost />} />
+//         <Route path="/edit-society" element={<EditSocietyDescription />} />
+//         <Route path="/soc_setting" element={<SocSetting />} />
+//         <Route path="/soc_members" element={<SocMembers />} />
+//         <Route path="/soc_followers" element={<SocFollowers />} />
+//         <Route path="/post_archive" element={<ArchivePage />} />
+//         <Route path="/save_post" element={<SavePostPage />} />
+//         <Route path="/privacy_policy" element={<PrivacyPolicy />} />
+//         <Route path="/help_support" element={<HelpSupport />} />
+//         <Route path="/Faq_page" element={<FaqPage />} />
+//       </Routes>
+//       {showNavPaths.includes(location.pathname) && <BottomNavBar />}
+//     </>
+//   );
+// };
+
+// export default AllRoutes;
